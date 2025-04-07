@@ -23,7 +23,7 @@ commandapi-annotations = { module = "dev.jorel:commandapi-annotations", version.
 triumph-gui = "dev.triumphteam:triumph-gui:3.1.11"
 
 # Plugin dependencies
-citizens = "net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT"
+citizens = "net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT"
 settlers = "io.github.milkdrinkers:settlers:0.0.1"
 bstats = "org.bstats:bstats-bukkit:3.1.0"
 vault = "com.github.MilkBowl:VaultAPI:1.7.1"
