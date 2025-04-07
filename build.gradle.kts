@@ -69,6 +69,10 @@ dependencies {
     }
 
     // Plugin dependencies
+    compileOnly(libs.citizens) {
+        exclude ("*", "*")
+    }
+    compileOnly(libs.settlers)
     implementation(libs.bstats)
     compileOnly(libs.vault)
     compileOnly(libs.packetevents)
