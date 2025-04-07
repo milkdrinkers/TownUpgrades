@@ -93,7 +93,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.github.exampleuser:exampleplugin:VERSION")
+    compileOnly("io.github.exampleuser:stewards:VERSION")
 }
 ```
 </details>
