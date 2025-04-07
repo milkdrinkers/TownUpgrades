@@ -31,6 +31,7 @@ repositories {
 
     maven("https://maven.athyrium.eu/releases")
 
+    maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven("https://repo.codemc.org/repository/maven-public/") {
         content {
