@@ -6,6 +6,7 @@ import io.github.milkdrinkers.stewards.database.handler.DatabaseHandler;
 import io.github.milkdrinkers.stewards.database.handler.DatabaseHandlerBuilder;
 import io.github.milkdrinkers.stewards.hook.HookManager;
 import io.github.milkdrinkers.stewards.listener.ListenerHandler;
+import io.github.milkdrinkers.stewards.steward.StewardTypeHandler;
 import io.github.milkdrinkers.stewards.threadutil.SchedulerHandler;
 import io.github.milkdrinkers.stewards.translation.TranslationHandler;
 import io.github.milkdrinkers.stewards.updatechecker.UpdateHandler;
@@ -34,6 +35,8 @@ public class Stewards extends JavaPlugin {
     private ListenerHandler listenerHandler;
     private UpdateHandler updateHandler;
     private SchedulerHandler schedulerHandler;
+        // Steward handlers
+    private StewardTypeHandler stewardTypeHandler;
 
     // Handlers list (defines order of load/enable/disable)
     private List<? extends Reloadable> handlers;
@@ -59,6 +62,7 @@ public class Stewards extends JavaPlugin {
             .withLogger(getComponentLogger())
             .build();
         hookManager = new HookManager(this);
+        stewardTypeHandler = new StewardTypeHandler();
         commandHandler = new CommandHandler(this);
         listenerHandler = new ListenerHandler(this);
         updateHandler = new UpdateHandler(this);
@@ -69,6 +73,7 @@ public class Stewards extends JavaPlugin {
             translationHandler,
             databaseHandler,
             hookManager,
+            stewardTypeHandler,
             commandHandler,
             listenerHandler,
             updateHandler,
@@ -134,5 +139,15 @@ public class Stewards extends JavaPlugin {
     @NotNull
     public UpdateHandler getUpdateHandler() {
         return updateHandler;
+    }
+
+    /**
+     * Gets StewardType handler.
+     *
+     * @return the StewardType handler
+     */
+    @NotNull
+    public StewardTypeHandler getStewardTypeHandler() {
+        return stewardTypeHandler;
     }
 }
