@@ -120,13 +120,16 @@ public class Steward {
 
             if (level <= 0)
                 level = 1;
+
             if (stewardType == null)
                 throw new InvalidStewardException("StewardType is null");
             // TODO: API
             if (!Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().isRegistered(stewardType))
                 throw new InvalidStewardException("StewardType is not registered");
+            
             if (settler == null)
                 throw new InvalidStewardException("Settler is null");
+
             if (townUUID == null)
                 throw new InvalidStewardException("TownUUID is null");
             if (TownyAPI.getInstance().getTown(townUUID) == null)

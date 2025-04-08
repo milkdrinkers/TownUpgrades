@@ -103,17 +103,12 @@ public class StewardType {
             if (startingLevel > maxLevel)
                 startingLevel = maxLevel;
 
-            if (id == null) {
+            if (id == null)
                 throw new InvalidStewardTypeException("StewardType Id is null");
-            }
-
-            if (name == null) {
+            if (name == null)
                 throw new InvalidStewardTypeException("StewardType Name is null");
-            }
-
-            if (settlerPrefix == null) {
+            if (settlerPrefix == null)
                 throw new InvalidStewardTypeException("StewardType Settler Prefix is null");
-            }
 
             return new StewardType(id, name, maxLevel, minLevel, startingLevel, settlerPrefix);
         }
