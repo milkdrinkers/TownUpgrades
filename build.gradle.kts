@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.shadow) // Shades and relocates dependencies, see https://gradleup.com/shadow/
     alias(libs.plugins.run.paper) // Built in test server using runServer and runMojangMappedServer tasks
     alias(libs.plugins.plugin.yml) // Automatic plugin.yml generation
-    //alias(libs.plugins.paperweight) // Used to develop internal plugins using Mojang mappings, See https://github.com/PaperMC/paperweight
     alias(libs.plugins.flyway) // Database migrations
     alias(libs.plugins.jooq) // Database ORM
     flywayjooqcache
@@ -43,13 +42,15 @@ repositories {
             includeGroup("com.github.MilkBowl") // VaultAPI
         }
     }
+    maven("https://repo.glaremasters.me/repository/towny/") { // Towny
+        content { includeGroup("com.palmergames.bukkit.towny") }
+    }
 }
 
 dependencies {
     // Core dependencies
     compileOnly(libs.annotations)
     annotationProcessor(libs.annotations)
-    //paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT") // Use instead of the `paper-api` entry if developing plugins using Mojang mappings
     compileOnly(libs.paper.api)
     implementation(libs.morepaperlib)
 
@@ -80,6 +81,7 @@ dependencies {
     compileOnly(libs.placeholderapi) {
         exclude("me.clip.placeholderapi.libs", "kyori")
     }
+    compileOnly(libs.towny)
 
     // Database dependencies - Core
     implementation(libs.hikaricp)
@@ -210,14 +212,14 @@ bukkit { // Options: https://github.com/Minecrell/plugin-yml#bukkit
     prefix = project.name
     version = "${project.version}"
     description = "${project.description}"
-    authors = listOf("GITHUB_USERNAME")
+    authors = listOf("darksaid98", "ShermansWorld")
     contributors = listOf()
     apiVersion = "1.21"
     foliaSupported = true // Mark plugin as supporting Folia
 
     // Misc properties
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD // STARTUP or POSTWORLD
-    depend = listOf()
+    depend = listOf("Towny")
     softDepend = listOf("PacketEvents", "Vault", "PlaceholderAPI")
     loadBefore = listOf()
     provides = listOf()

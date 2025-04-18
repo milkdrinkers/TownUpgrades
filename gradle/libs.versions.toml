@@ -29,6 +29,7 @@ bstats = "org.bstats:bstats-bukkit:3.1.0"
 vault = "com.github.MilkBowl:VaultAPI:1.7.1"
 packetevents = "com.github.retrooper:packetevents-spigot:2.7.0"
 placeholderapi = "me.clip:placeholderapi:2.11.6"
+towny = "com.palmergames.bukkit.towny:towny:0.101.1.5"
 
 # Database dependencies
 hikaricp = "com.zaxxer:HikariCP:6.3.0"
@@ -63,6 +64,5 @@ testcontainers = ["testcontainers-jupiter", "testcontainers-mysql", "testcontain
 shadow = "com.gradleup.shadow:8.3.6"
 run-paper = "xyz.jpenilla.run-paper:2.3.1"
 plugin-yml = "de.eldoria.plugin-yml.bukkit:0.7.1"
-paperweight = "io.papermc.paperweight.userdev:1.7.7"
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 jooq = { id = "org.jooq.jooq-codegen-gradle", version.ref = "jooq" }
