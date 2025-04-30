@@ -176,7 +176,7 @@ tasks {
 
     runServer {
         // Configure the Minecraft version for our task.
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.4")
 
         // IntelliJ IDEA debugger setup: https://docs.papermc.io/paper/dev/debugging#using-a-remote-debugger
         jvmArgs("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true", "-DIReallyKnowWhatIAmDoingISwear", "-Dpaper.playerconnection.keepalive=6000")
@@ -191,9 +191,10 @@ tasks {
 //            url("https://download.luckperms.net/1515/bukkit/loader/LuckPerms-Bukkit-5.4.102.jar")
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
             github("retrooper", "packetevents", "v2.7.0", "packetevents-spigot-2.7.0.jar")
+            github("milkdrinkers", "Settlers", "0.0.1", "Settlers-0.0.1.jar")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("ViaVersion", "5.2.1")
-            hangar("ViaBackwards", "5.2.1")
+            hangar("ViaVersion", "5.3.2")
+            hangar("ViaBackwards", "5.3.2")
         }
     }
 }
@@ -212,7 +213,7 @@ bukkit { // Options: https://github.com/Minecrell/plugin-yml#bukkit
     prefix = project.name
     version = "${project.version}"
     description = "${project.description}"
-    authors = listOf("darksaid98", "ShermansWorld")
+    authors = listOf("darksaid98", "ShermansWorld", "rooooose-b")
     contributors = listOf()
     apiVersion = "1.21"
     foliaSupported = true // Mark plugin as supporting Folia
