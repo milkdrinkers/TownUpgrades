@@ -130,11 +130,6 @@ public class Steward {
             if (settler == null)
                 throw new InvalidStewardException("Settler is null");
 
-            if (townUUID == null)
-                throw new InvalidStewardException("TownUUID is null");
-            if (TownyAPI.getInstance().getTown(townUUID) == null)
-                throw new InvalidStewardException("could not find matching town for TownUUID");
-
             return new Steward(stewardType, settler, townBlock, level, townUUID, isEnabled, isHidden, dailyUpkeepCost);
         }
     }

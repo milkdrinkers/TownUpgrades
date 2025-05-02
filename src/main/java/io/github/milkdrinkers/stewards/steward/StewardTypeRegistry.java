@@ -29,6 +29,10 @@ public class StewardTypeRegistry {
         return Set.copyOf(registry.values());
     }
 
+    public StewardType getType(String id) {
+        return registry.get(id);
+    }
+
     public boolean isRegistered(String key) {
         return registry.containsKey(key);
     }
