@@ -1,4 +1,9 @@
 package io.github.milkdrinkers.stewards.trait;
 
-public class ArchitectTrait {
+import net.citizensnpcs.api.trait.Trait;
+
+public class ArchitectTrait extends Trait {
+    protected ArchitectTrait() {
+        super("architect");
+    }
 }

@@ -11,6 +11,8 @@ public class StewardTypeHandler implements Reloadable {
     public String ARCHITECT_ID = "architect";
     public String TREASURER_ID = "treasurer";
     public String BAILIFF_ID = "bailiff";
+    public String PORTMASTER_ID = "portmaster";
+    public String STABLEMASTER_ID = "stablemaster";
 
     @Override
     public void onLoad(Stewards plugin) {
@@ -40,18 +42,18 @@ public class StewardTypeHandler implements Reloadable {
                 .setMinLevel(1)
                 .setName("Architect")
                 .setStartingLevel(1)
-                .setSettlerPrefix("Architect ") // TODO Translations
+                .setSettlerPrefix("Architect") // TODO Translations
                 .build();
 
             stewardTypeRegistry.register(architect);
 
             StewardType treasurer = StewardType.builder()
                 .setId(TREASURER_ID)
-                .setMaxLevel(7)
+                .setMaxLevel(6)
                 .setMinLevel(1)
                 .setName("Treasurer")
                 .setStartingLevel(1)
-                .setSettlerPrefix("Treasurer ") // TODO Translations
+                .setSettlerPrefix("Treasurer") // TODO Translations
                 .build();
 
             stewardTypeRegistry.register(treasurer);
@@ -62,10 +64,32 @@ public class StewardTypeHandler implements Reloadable {
                 .setMinLevel(1)
                 .setName("Bailiff")
                 .setStartingLevel(1)
-                .setSettlerPrefix("Bailiff ") // TODO Translations
+                .setSettlerPrefix("Bailiff") // TODO Translations
                 .build();
 
             stewardTypeRegistry.register(bailiff);
+
+            StewardType portmaster = StewardType.builder()
+                .setId(PORTMASTER_ID)
+                .setMaxLevel(4)
+                .setMinLevel(1)
+                .setName("Port Master")
+                .setStartingLevel(1)
+                .setSettlerPrefix("Port Master") // TODO Translations
+                .build();
+
+            stewardTypeRegistry.register(portmaster);
+
+            StewardType stablemaster = StewardType.builder()
+                .setId(STABLEMASTER_ID)
+                .setMaxLevel(3)
+                .setMinLevel(1)
+                .setName("Stable Master")
+                .setStartingLevel(1)
+                .setSettlerPrefix("Stable Master") // TODO Translations
+                .build();
+
+            stewardTypeRegistry.register(stablemaster);
         } catch (InvalidStewardTypeException e) {
             throw new RuntimeException(e);
         }

@@ -4,6 +4,7 @@ import io.github.milkdrinkers.settlers.api.SettlersAPI;
 import io.github.milkdrinkers.stewards.gui.StewardBaseGui;
 import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
+import io.github.milkdrinkers.stewards.utility.Logger;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.persistence.Persist;
@@ -57,11 +58,6 @@ public class StewardTrait extends Trait {
         if (steward == null) return;
 
         StewardBaseGui.createBaseGui(steward, e.getClicker()).open(e.getClicker());
-    }
-
-    @Override
-    public void onAttach() {
-        anchorLocation = this.getNPC().getEntity().getLocation();
     }
 
 }

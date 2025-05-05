@@ -1,6 +1,5 @@
 package io.github.milkdrinkers.stewards.steward;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.milkdrinkers.settlers.api.settler.AbstractSettler;
 import io.github.milkdrinkers.stewards.Stewards;
@@ -12,9 +11,9 @@ import java.util.UUID;
 public class Steward {
     private final StewardType stewardType;
     private final AbstractSettler settler;
-    private final TownBlock townBlock;
+    private TownBlock townBlock;
     private final int level;
-    private final UUID townUUID;
+    private UUID townUUID;
     private final boolean isEnabled;
     private final boolean isHidden;
     private final double dailyUpkeepCost;
@@ -42,12 +41,20 @@ public class Steward {
         return townBlock;
     }
 
+    public void setTownBLock(TownBlock townBlock) {
+        this.townBlock = townBlock;
+    }
+
     public int getLevel() {
         return level;
     }
 
     public UUID getTownUUID() {
         return townUUID;
+    }
+
+    public void setTownUUID(UUID townUUID) {
+        this.townUUID = townUUID;
     }
 
     public boolean isEnabled() {

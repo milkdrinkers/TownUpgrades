@@ -9,7 +9,7 @@ import io.github.milkdrinkers.stewards.listener.ListenerHandler;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
 import io.github.milkdrinkers.stewards.steward.StewardTypeHandler;
 import io.github.milkdrinkers.stewards.threadutil.SchedulerHandler;
-import io.github.milkdrinkers.stewards.trait.StewardTrait;
+import io.github.milkdrinkers.stewards.trait.*;
 import io.github.milkdrinkers.stewards.translation.TranslationHandler;
 import io.github.milkdrinkers.stewards.updatechecker.UpdateHandler;
 import io.github.milkdrinkers.stewards.utility.DB;
@@ -102,7 +102,12 @@ public class Stewards extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(StewardTrait.class));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(StewardTrait.class).withName("steward"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ArchitectTrait.class).withName("architect"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(BailiffTrait.class).withName("bailiff"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PortmasterTrait.class).withName("portmaster"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(StablemasterTrait.class).withName("stablemaster"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TreasurerTrait.class).withName("treasurer"));
     }
 
     @Override

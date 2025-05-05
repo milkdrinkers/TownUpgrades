@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.InvalidNameException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
@@ -15,6 +14,9 @@ import com.palmergames.bukkit.towny.regen.PlotBlockData;
 import com.palmergames.bukkit.towny.regen.TownyRegenAPI;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import io.github.milkdrinkers.colorparser.ColorParser;
+import io.github.milkdrinkers.stewards.steward.Steward;
+import io.github.milkdrinkers.stewards.towny.TownMetaData;
+import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
 import net.kyori.adventure.text.Component;
 import org.bukkit.conversations.*;
@@ -32,8 +34,15 @@ public class CreateTownConversation {
     };
 
     static String townName;
+    static Steward steward;
 
-    public static Prompt newTownPrompt = new StringPrompt() {
+   public static Prompt getNewTownPrompt(Steward steward) {
+       CreateTownConversation.steward = steward;
+       return newTownPrompt;
+   }
+
+
+    private static final Prompt newTownPrompt = new StringPrompt() {
         @Override
         public @NotNull String getPromptText(@NotNull ConversationContext context) {
             return "What do you want your town to be called?";
@@ -51,7 +60,7 @@ public class CreateTownConversation {
         }
     };
 
-    private static Prompt confirmPrompt = new FixedSetPrompt("YES", "NO", "yes", "no", "Yes", "No", "y", "n", "Y", "N") {
+    private static final Prompt confirmPrompt = new FixedSetPrompt("YES", "NO", "yes", "no", "Yes", "No", "y", "n", "Y", "N") {
 
         @Override
         public @NotNull String getPromptText(@NotNull ConversationContext context) {
@@ -64,6 +73,7 @@ public class CreateTownConversation {
 
             Player player = (Player) context.getForWhom();
 
+            // TOWNY LOGIC
             try {
                 TownyUniverse.getInstance().newTown(townName);
             } catch (AlreadyRegisteredException | InvalidNameException e) {
@@ -147,7 +157,13 @@ public class CreateTownConversation {
 
             new NewTownEvent(town).callEvent();
 
-            player.sendMessage(ColorParser.of("<green>The town was created!").build());
+            // STEWARDS SPECIFIC
+            player.sendMessage(ColorParser.of("<green>The town was created!").build()); // TODO charge player for creating town
+
+            TownMetaData.setBankLimit(town, Cfg.get().getInt("treasurer.limit.level-0"));
+
+            steward.setTownUUID(town.getUUID());
+            steward.setTownBLock(townBlock);
 
             return Prompt.END_OF_CONVERSATION;
         }
