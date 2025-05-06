@@ -4,6 +4,7 @@ import io.github.milkdrinkers.settlers.api.settler.AbstractSettler;
 import io.github.milkdrinkers.stewards.Reloadable;
 import io.github.milkdrinkers.stewards.Stewards;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -12,6 +13,7 @@ public class StewardLookup implements Reloadable {
 
     private final Stewards plugin;
     private final HashMap<UUID, Steward> settlerStewardHashmap = new HashMap<>();
+    private final HashMap<UUID, Steward> stewardFollowingPlayerHashmap = new HashMap<>();
 
     public static StewardLookup get() {
         return Stewards.getInstance().getStewardLookup();
@@ -21,16 +23,48 @@ public class StewardLookup implements Reloadable {
         this.plugin = plugin;
     }
 
-    public Steward getStewardByUuid(UUID uuid) {
+    public void removeStewardFollowingPlayer(UUID uuid) {
+        stewardFollowingPlayerHashmap.remove(uuid);
+    }
+
+    public void removeStewardFollowingPlayer(Player player) {
+        removeStewardFollowingPlayer(player.getUniqueId());
+    }
+
+    public void setStewardFollowingPlayer(UUID uuid, Steward steward) {
+        stewardFollowingPlayerHashmap.put(uuid, steward);
+    }
+
+    public void setStewardFollowingPlayer(Player player, Steward steward) {
+        setStewardFollowingPlayer(player.getUniqueId(), steward);
+    }
+
+    public boolean isPlayerFollowed(UUID uuid) {
+        return stewardFollowingPlayerHashmap.containsKey(uuid);
+    }
+
+    public boolean isPlayerFollowed(Player player) {
+        return isPlayerFollowed(player.getUniqueId());
+    }
+
+    public Steward getStewardFollwingPlayer(UUID uuid) {
+        return stewardFollowingPlayerHashmap.get(uuid);
+    }
+
+    public Steward getStewardFollowingPlayer(Player player) {
+        return getStewardFollwingPlayer(player.getUniqueId());
+    }
+
+    public Steward getSteward(UUID uuid) {
         return settlerStewardHashmap.get(uuid);
     }
 
-    public Steward getStewardByNpc(NPC npc) {
-        return getStewardByUuid(npc.getUniqueId());
+    public Steward getSteward(NPC npc) {
+        return getSteward(npc.getUniqueId());
     }
 
-    public Steward getStewardBySettler(AbstractSettler settler) {
-        return getStewardByNpc(settler.getNpc());
+    public Steward getSteward(AbstractSettler settler) {
+        return getSteward(settler.getNpc());
     }
 
     public void registerSteward(Steward steward) {

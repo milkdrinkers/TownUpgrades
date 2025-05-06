@@ -1,5 +1,7 @@
 package io.github.milkdrinkers.stewards.gui;
 
+import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.TownyAPI;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import io.github.milkdrinkers.colorparser.ColorParser;
@@ -8,10 +10,12 @@ import io.github.milkdrinkers.settlers.api.settler.SettlerBuilder;
 import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.conversation.CreateTownConversation;
 import io.github.milkdrinkers.stewards.exception.InvalidStewardException;
-import io.github.milkdrinkers.stewards.steward.Steward;
-import io.github.milkdrinkers.stewards.steward.StewardLookup;
+import io.github.milkdrinkers.stewards.steward.*;
+import io.github.milkdrinkers.stewards.towny.TownMetaData;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Appearance;
+import io.github.milkdrinkers.stewards.utility.Cfg;
+import io.github.milkdrinkers.stewards.utility.Logger;
 import net.citizensnpcs.trait.HologramTrait;
 import net.citizensnpcs.trait.SkinTrait;
 import net.kyori.adventure.text.Component;
@@ -24,12 +28,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class StewardBaseGui {
+public class StewardBaseGui { // TODO refactor this absolutely disgusting class
 
     public static Gui createBaseGui(Steward steward, Player player) {
         Stewards plugin = Stewards.getInstance();
 
-        Gui gui = Gui.gui().title(Component.text("Steward")).rows(5).create();
+        Gui gui = Gui.gui()
+            .title(Component.text(steward.getStewardType().getSettlerPrefix()
+                + " " + steward.getSettler().getNpc().getName()))
+            .rows(5).create();
+
         gui.disableItemDrop()
             .disableItemPlace()
             .disableItemSwap()
@@ -45,6 +53,14 @@ public class StewardBaseGui {
                 populateArchitectTownButtons(gui, steward, player);
         }
 
+        if (steward.getStewardType() == plugin.getStewardTypeHandler().getStewardTypeRegistry().getType(plugin.getStewardTypeHandler().TREASURER_ID)) {
+            if (steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).isHired()) {
+
+            } else {
+                populateUnHiredButtons(gui, steward, player);
+            }
+        }
+
 
         return gui;
     }
@@ -52,7 +68,7 @@ public class StewardBaseGui {
     private static void populateBorders(Gui gui) {
         ItemStack borderItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta meta = borderItem.getItemMeta();
-        meta.customName(Component.empty());
+        meta.displayName(Component.empty());
         meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         borderItem.setItemMeta(meta);
 
@@ -62,11 +78,19 @@ public class StewardBaseGui {
     private static void populateButtons(Gui gui, Steward steward, Player player) {
         ItemStack exitItem = new ItemStack(Material.BARRIER);
         ItemMeta exitMeta = exitItem.getItemMeta();
-        exitMeta.customName(ColorParser.of("<dark_red>Exit").build());
+        exitMeta.displayName(ColorParser.of("<dark_red>Exit").build());
         exitMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         exitItem.setItemMeta(exitMeta);
 
         gui.setItem(5, 9, ItemBuilder.from(exitItem).asGuiItem(event -> gui.close(player)));
+
+        ItemStack appearanceItem = new ItemStack(Material.PAPER);
+        ItemMeta appearanceMeta = appearanceItem.getItemMeta();
+        appearanceMeta.displayName(ColorParser.of("<green>Re-roll name and skin").build());
+        appearanceMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        appearanceItem.setItemMeta(appearanceMeta);
+
+        gui.setItem(5, 1, ItemBuilder.from(appearanceItem).asGuiItem(event -> AppearanceGui.createGui(steward, player).open(player)));
 
 
         ItemStack followItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
@@ -74,9 +98,9 @@ public class StewardBaseGui {
 
 
         if (steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).isFollowing()) {
-            followMeta.customName(ColorParser.of("<green>Stop following!").build());
+            followMeta.displayName(ColorParser.of("<green>Stop following!").build());
         } else {
-            followMeta.customName(ColorParser.of("<green>Follow me!").build());
+            followMeta.displayName(ColorParser.of("<green>Follow me!").build());
         }
 
         followMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -91,79 +115,233 @@ public class StewardBaseGui {
             } else {
                 steward.getSettler().getNpc().getNavigator().setTarget(player, false);
                 trait.setFollowing(true);
+                trait.setFollowingPlayer(player);
+                StewardLookup.get().setStewardFollowingPlayer(player, steward);
                 gui.close(player);
             }
+        }));
+    }
+
+    private static void populateUnHiredButtons(Gui gui, Steward steward, Player player) {
+        Stewards plugin = Stewards.getInstance();
+
+        ItemStack hireItem = new ItemStack(Material.PAPER);
+        ItemMeta hireMeta = hireItem.getItemMeta();
+        hireMeta.displayName(ColorParser.of("<green>Hire steward").build()); // TODO lore that shows cost
+        hireMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        hireItem.setItemMeta(hireMeta);
+
+        ItemStack dismissItem = new ItemStack(Material.BARRIER);
+        ItemMeta dismissMeta = dismissItem.getItemMeta();
+        dismissMeta.displayName(ColorParser.of("<red>Dismiss Steward").build());
+        dismissMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        dismissItem.setItemMeta(dismissMeta);
+
+        gui.setItem(3, 4, ItemBuilder.from(hireItem).asGuiItem(event -> { // TODO chunk checking logic
+            steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).setHired(true);
+            TownMetaData.setUnhiredSteward(TownyAPI.getInstance().getTown(player), false);
+
+            if (steward.getStewardType() == plugin.getStewardTypeHandler().getStewardTypeRegistry().getType(plugin.getStewardTypeHandler().TREASURER_ID)) {
+                TownMetaData.setTreasurer(TownyAPI.getInstance().getTown(player), steward.getSettler().getNpc().getUniqueId());
+            } else if (steward.getStewardType() == plugin.getStewardTypeHandler().getStewardTypeRegistry().getType(plugin.getStewardTypeHandler().BAILIFF_ID)) {
+                TownMetaData.setBailiff(TownyAPI.getInstance().getTown(player), steward.getSettler().getNpc().getUniqueId());
+            } else if (steward.getStewardType() == plugin.getStewardTypeHandler().getStewardTypeRegistry().getType(plugin.getStewardTypeHandler().PORTMASTER_ID)) {
+                TownMetaData.setPortmaster(TownyAPI.getInstance().getTown(player), steward.getSettler().getNpc().getUniqueId());
+            } else if (steward.getStewardType() == plugin.getStewardTypeHandler().getStewardTypeRegistry().getType(plugin.getStewardTypeHandler().STABLEMASTER_ID)) {
+                TownMetaData.setStablemaster(TownyAPI.getInstance().getTown(player), steward.getSettler().getNpc().getUniqueId());
+            } else {
+                Logger.get().error("Invalid steward type: {}", steward.getStewardType());
+            }
+
+            gui.close(player);
+        }));
+
+        gui.setItem(3, 6, ItemBuilder.from(dismissItem).asGuiItem(event -> {
+            ConfirmDismissGui.createGui(steward, player).open(player);
         }));
     }
 
     private static void populateArchitectNoTownButtons(Gui gui, Steward steward, Player player) {
         ItemStack townItem = new ItemStack(Material.PAPER);
         ItemMeta townMeta = townItem.getItemMeta();
-        townMeta.customName(ColorParser.of("<green>Create town").build()); // TODO lore that shows cost for creating town
+        townMeta.displayName(ColorParser.of("<green>Create town").build()); // TODO lore that shows cost for creating town
         townMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         townItem.setItemMeta(townMeta);
 
-        gui.setItem(3, 5, ItemBuilder.from(townItem).asGuiItem(event -> {
+        ItemStack dismissItem = new ItemStack(Material.BARRIER);
+        ItemMeta dismissMeta = dismissItem.getItemMeta();
+        dismissMeta.displayName(ColorParser.of("<red>Dismiss Steward").build()); // TODO lore that shows cost for creating town
+        dismissMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        dismissItem.setItemMeta(dismissMeta);
+
+        gui.setItem(3, 4, ItemBuilder.from(townItem).asGuiItem(event -> {
             gui.close(player);
             ConversationFactory factory = new ConversationFactory(Stewards.getInstance()).withPrefix(CreateTownConversation.getPrefix).withLocalEcho(false);
             factory.withFirstPrompt(CreateTownConversation.getNewTownPrompt(steward)).buildConversation(player).begin();
         }));
+
+        gui.setItem(3, 6, ItemBuilder.from(dismissItem).asGuiItem(event -> {
+            ConfirmDismissGui.createGui(steward, player).open(player);
+        }));
     }
 
-    private static void populateArchitectTownButtons(Gui gui, Steward steward, Player player) { // TODO Check if town has banker and/or bailiff
+    private static void populateArchitectTownButtons(Gui gui, Steward steward, Player player) {
+        boolean unhiredSteward = TownMetaData.hasUnhiredSteward(TownyAPI.getInstance().getTown(player));
+
         ItemStack treasurerItem = new ItemStack(Material.PAPER);
         ItemMeta treasurerMeta = treasurerItem.getItemMeta();
-        treasurerMeta.customName(ColorParser.of("<green>Hire the Treasurer").build());
-        treasurerMeta.lore(List.of(
-            ColorParser.of("<grey>The Treasurer costs " + 1 + "⊚ to hire.").build(),
-            ColorParser.of("<grey>The Treasurer will allow you to increase your town bank limit.").build()));
+
+        if (!TownMetaData.hasTreasurer(TownyAPI.getInstance().getTown(player))) {
+            treasurerMeta.displayName(ColorParser.of("<green>Hire the Treasurer").build());
+            treasurerMeta.lore(List.of(
+                ColorParser.of("<grey>The Treasurer costs " + Cfg.get().getInt("treasurer.upgrade-cost.level-1") + "⊚ to hire.").build(),
+                ColorParser.of("<grey>The Treasurer will allow you to increase your town bank limit.").build()));
+        } else {
+            Steward tempSteward = StewardLookup.get().getSteward(TownMetaData.getTreasurer(TownyAPI.getInstance().getTown(player)));
+            int level = tempSteward.getLevel();
+
+            if (level == tempSteward.getStewardType().getMaxLevel()) {
+                treasurerMeta.displayName(ColorParser.of("<green>Treasurer").build());
+                treasurerMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Treasurer is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>This is the maximum level for a Treasurer.").build()));
+            } else {
+                treasurerMeta.displayName(ColorParser.of("<green>Upgrade Treasurer").build());
+                treasurerMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Treasurer is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>Upgrading to the next level costs " +
+                        Cfg.get().getInt("treasurer.upgrade-cost.level-" + (level + 1)) + "⊚.").build()));
+            }
+        }
         treasurerMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         treasurerItem.setItemMeta(treasurerMeta);
 
-        ItemStack bailiffItem = new ItemStack(Material.PAPER);
+        ItemStack bailiffItem = new ItemStack(Material.PAPER); // TODO translations
         ItemMeta bailiffMeta = bailiffItem.getItemMeta();
-        bailiffMeta.customName(ColorParser.of("<green>Hire the Bailiff").build());
-        bailiffMeta.lore(List.of(
-            ColorParser.of("<grey>The Bailiff costs " + 1 + "⊚ to hire.").build(),
-            ColorParser.of("<grey>The Bailiff will add additional claims to your town.").build())); // TODO translations and config stuff
+
+        if (!TownMetaData.hasTreasurer(TownyAPI.getInstance().getTown(player))) {
+            bailiffMeta.displayName(ColorParser.of("<green>Hire the Bailiff").build());
+            bailiffMeta.lore(List.of(
+                ColorParser.of("<grey>The Bailiff costs " + Cfg.get().getInt("bailiff.upgrade-cost.level-1") + "⊚ to hire.").build(),
+                ColorParser.of("<grey>The Bailiff will grant you extra claims.").build()));
+        } else {
+            Steward tempSteward = StewardLookup.get().getSteward(TownMetaData.getBailiff(TownyAPI.getInstance().getTown(player)));
+            int level = tempSteward.getLevel();
+
+            if (level == tempSteward.getStewardType().getMaxLevel()) {
+                bailiffMeta.displayName(ColorParser.of("<green>Bailiff").build());
+                bailiffMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Bailiff is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>This is the maximum level for a Bailiff.").build()));
+            } else {
+                bailiffMeta.displayName(ColorParser.of("<green>Upgrade Bailiff").build());
+                bailiffMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Bailiff is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>Upgrading to the next level costs " +
+                        Cfg.get().getInt("bailiff.upgrade-cost.level-" + (level + 1)) + "⊚.").build()));
+            }
+        }
         bailiffMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         bailiffItem.setItemMeta(bailiffMeta);
 
         ItemStack portmasterItem = new ItemStack(Material.PAPER);
         ItemMeta portmasterMeta = portmasterItem.getItemMeta();
-        portmasterMeta.customName(ColorParser.of("<green>Hire the Port Master").build());
-        portmasterMeta.lore(List.of(
-            ColorParser.of("<grey>The Port Master costs " + 1 + "⊚ to hire.").build(),
-            ColorParser.of("<grey>The Port Master will allow you to create a port.").build()));
+
+        if (!TownMetaData.hasTreasurer(TownyAPI.getInstance().getTown(player))) {
+            portmasterMeta.displayName(ColorParser.of("<green>Hire the Port Master").build());
+            portmasterMeta.lore(List.of(
+                ColorParser.of("<grey>The Port Master costs " + Cfg.get().getInt("portmaster.upgrade-cost.level-1") + "⊚ to hire.").build(),
+                ColorParser.of("<grey>The Port Master will allow you to create a port.").build()));
+        } else {
+            Steward tempSteward = StewardLookup.get().getSteward(TownMetaData.getPortmaster(TownyAPI.getInstance().getTown(player)));
+            int level = tempSteward.getLevel();
+
+            if (level == tempSteward.getStewardType().getMaxLevel()) {
+                portmasterMeta.displayName(ColorParser.of("<green>Port Master").build());
+                portmasterMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Port Master is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>This is the maximum level for a Port Master.").build()));
+            } else {
+                portmasterMeta.displayName(ColorParser.of("<green>Upgrade Port Master").build());
+                portmasterMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Port Master is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>Upgrading to the next level costs " +
+                        Cfg.get().getInt("portmaster.upgrade-cost.level-" + (level + 1)) + "⊚.").build()));
+            }
+        }
         portmasterMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         portmasterItem.setItemMeta(portmasterMeta);
 
         ItemStack stablemasterItem = new ItemStack(Material.PAPER);
         ItemMeta stablemasterMeta = stablemasterItem.getItemMeta();
-        stablemasterMeta.customName(ColorParser.of("<green>Hire the Stable Master").build());
-        stablemasterMeta.lore(List.of(
-            ColorParser.of("<grey>The Stable Master costs " + 1 + "⊚ to hire.").build(),
-            ColorParser.of("<grey>The Stable Master will allow you to create a carriage station.").build())); // TODO translations and config stuff
+
+
+        if (!TownMetaData.hasTreasurer(TownyAPI.getInstance().getTown(player))) {
+            stablemasterMeta.displayName(ColorParser.of("<green>Hire the Stable Master").build());
+            stablemasterMeta.lore(List.of(
+                ColorParser.of("<grey>The Stable Master costs " + Cfg.get().getInt("stablemaster.upgrade-cost.level-1") + "⊚ to hire.").build(),
+                ColorParser.of("<grey>The Stable Master will allow you to create a carriage station.").build()));
+        } else {
+            Steward tempSteward = StewardLookup.get().getSteward(TownMetaData.getStablemaster(TownyAPI.getInstance().getTown(player)));
+            int level = tempSteward.getLevel();
+
+            if (level == tempSteward.getStewardType().getMaxLevel()) {
+                stablemasterMeta.displayName(ColorParser.of("<green>Stable Master").build());
+                stablemasterMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Stable Master is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>This is the maximum level for a Stable Master.").build()));
+            } else {
+                stablemasterMeta.displayName(ColorParser.of("<green>Upgrade Stable Master").build());
+                stablemasterMeta.lore(List.of(
+                    ColorParser.of("<grey>Your Stable Master is currently level " + level + ".").build(),
+                    ColorParser.of("<grey>Upgrading to the next level costs " +
+                        Cfg.get().getInt("stablemaster.upgrade-cost.level-" + (level + 1)) + "⊚.").build()));
+            }
+        }
         stablemasterMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         stablemasterItem.setItemMeta(stablemasterMeta);
 
         gui.setItem(3, 2, ItemBuilder.from(treasurerItem).asGuiItem(e -> {
-            createSteward(Stewards.getInstance().getStewardTypeHandler().TREASURER_ID, player);
+            if (TownMetaData.hasTreasurer(TownyAPI.getInstance().getTown(player))) {
+
+            } else {
+                if (!unhiredSteward) {
+                    createSteward(Stewards.getInstance().getStewardTypeHandler().TREASURER_ID, player);
+                    TownMetaData.setUnhiredSteward(TownyAPI.getInstance().getTown(player), true);
+                } else {
+                    player.sendMessage(ColorParser.of("<red>You need to hire or dismiss the spawned steward before you can spawn another one.").build());
+                }
+            }
             gui.close(player);
         }));
 
         gui.setItem(3, 4, ItemBuilder.from(bailiffItem).asGuiItem(e -> {
-            createSteward(Stewards.getInstance().getStewardTypeHandler().BAILIFF_ID, player);
+            if (!unhiredSteward) {
+                createSteward(Stewards.getInstance().getStewardTypeHandler().BAILIFF_ID, player);
+                TownMetaData.setUnhiredSteward(TownyAPI.getInstance().getTown(player), true);
+            } else {
+                player.sendMessage(ColorParser.of("<red>You need to hire or dismiss the spawned steward before you can spawn another one.").build());
+            }
             gui.close(player);
         }));
 
         gui.setItem(3, 6, ItemBuilder.from(portmasterItem).asGuiItem(e -> {
-            createSteward(Stewards.getInstance().getStewardTypeHandler().PORTMASTER_ID, player);
+            if (!unhiredSteward) {
+                createSteward(Stewards.getInstance().getStewardTypeHandler().PORTMASTER_ID, player);
+                TownMetaData.setUnhiredSteward(TownyAPI.getInstance().getTown(player), true);
+            } else {
+                player.sendMessage(ColorParser.of("<red>You need to hire or dismiss the spawned steward before you can spawn another one.").build());
+            }
             gui.close(player);
         }));
 
         gui.setItem(3, 8, ItemBuilder.from(stablemasterItem).asGuiItem(e -> {
-            createSteward(Stewards.getInstance().getStewardTypeHandler().STABLEMASTER_ID, player);
+            if (!unhiredSteward) {
+                createSteward(Stewards.getInstance().getStewardTypeHandler().STABLEMASTER_ID, player);
+                TownMetaData.setUnhiredSteward(TownyAPI.getInstance().getTown(player), true);
+            } else {
+                player.sendMessage(ColorParser.of("<red>You need to hire or dismiss the spawned steward before you can spawn another one.").build());
+            }
             gui.close(player);
         }));
     }

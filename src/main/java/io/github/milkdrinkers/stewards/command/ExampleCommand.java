@@ -38,7 +38,7 @@ class ExampleCommand {
 
     private void executorExample(CommandSender sender, CommandArguments args)  {
         try {
-            boolean female = Math.random() > 0.5;
+            boolean female = Math.random() > 0.5; // TODO most up to date spawn logic.
             String name = Appearance.getMaleName();
             if (female)
                 name = Appearance.getFemaleName();
@@ -58,7 +58,10 @@ class ExampleCommand {
                 .setSettler(settler)
                 .build();
 
-            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class);
+            StewardTrait stewardTrait = steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class);
+            stewardTrait.setFemale(female);
+            stewardTrait.setLevel(1);
+
             steward.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class);
 
             HologramTrait hologramTrait = steward.getSettler().getNpc().getOrAddTrait(HologramTrait.class);

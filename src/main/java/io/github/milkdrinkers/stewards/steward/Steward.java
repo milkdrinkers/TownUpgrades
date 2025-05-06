@@ -12,7 +12,7 @@ public class Steward {
     private final StewardType stewardType;
     private final AbstractSettler settler;
     private TownBlock townBlock;
-    private final int level;
+    private int level;
     private UUID townUUID;
     private final boolean isEnabled;
     private final boolean isHidden;
@@ -47,6 +47,14 @@ public class Steward {
 
     public int getLevel() {
         return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void levelUp() {
+        level++;
     }
 
     public UUID getTownUUID() {

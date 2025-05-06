@@ -15,10 +15,13 @@ public class SettlersListener implements Listener {
     public void onSettlerSpawn(SettlerSpawnEvent e) {
         if (!e.getSettler().getNpc().hasTrait(StewardTrait.class)) return;
 
-        if (StewardLookup.get().getStewardBySettler(e.getSettler()) != null) return;
+        if (StewardLookup.get().getSteward(e.getSettler()) != null) return;
+
+
+        StewardTrait stewardTrait = e.getSettler().getNpc().getOrAddTrait(StewardTrait.class);
 
         // This theoretically shouldn't change anything, as the anchor location should always update as the NPC moves
-        e.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setAnchorLocation(e.getLocation());
+        stewardTrait.setAnchorLocation(e.getLocation());
 
         // If the Steward doesn't have at least one of these traits, something is wrong.
         if (e.getSettler().getNpc().hasTrait(ArchitectTrait.class)) {
@@ -29,7 +32,7 @@ public class SettlersListener implements Listener {
                     .setDailyUpkeepCost(0)
                     .setIsEnabled(true)
                     .setIsHidden(false)
-                    .setLevel(1)
+                    .setLevel(stewardTrait.getLevel())
                     .setSettler(e.getSettler())
                     .build();
 
@@ -45,7 +48,7 @@ public class SettlersListener implements Listener {
                         .setDailyUpkeepCost(0)
                         .setIsEnabled(true)
                         .setIsHidden(false)
-                        .setLevel(1)
+                        .setLevel(stewardTrait.getLevel())
                         .setSettler(e.getSettler())
                         .build();
 
@@ -61,7 +64,7 @@ public class SettlersListener implements Listener {
                         .setDailyUpkeepCost(0)
                         .setIsEnabled(true)
                         .setIsHidden(false)
-                        .setLevel(1)
+                        .setLevel(stewardTrait.getLevel())
                         .setSettler(e.getSettler())
                         .build();
 
@@ -77,7 +80,7 @@ public class SettlersListener implements Listener {
                         .setDailyUpkeepCost(0)
                         .setIsEnabled(true)
                         .setIsHidden(false)
-                        .setLevel(1)
+                        .setLevel(stewardTrait.getLevel())
                         .setSettler(e.getSettler())
                         .build();
 
@@ -93,7 +96,7 @@ public class SettlersListener implements Listener {
                         .setDailyUpkeepCost(0)
                         .setIsEnabled(true)
                         .setIsHidden(false)
-                        .setLevel(1)
+                        .setLevel(stewardTrait.getLevel())
                         .setSettler(e.getSettler())
                         .build();
 
