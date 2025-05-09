@@ -69,7 +69,7 @@ public class AppearanceGui {
                 newName = Appearance.getFemaleName();
                 steward.getSettler().getNpc().setName(newName);
                 steward.getSettler().getNpc().getEntity().customName(Component.text(newName));
-                steward.getSettler().getNpc().getEntity().setCustomNameVisible(true);
+                steward.getSettler().getNpc().getEntity().setCustomNameVisible(true); // TODO reimplement this properly after settlers bug is fixed
 
                 Location location = steward.getSettler().getNpc().getEntity().getLocation();
                 steward.getSettler().getNpc().despawn();

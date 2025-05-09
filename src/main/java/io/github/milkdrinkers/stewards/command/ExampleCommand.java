@@ -2,8 +2,8 @@ package io.github.milkdrinkers.stewards.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.executors.CommandArguments;
-import io.github.milkdrinkers.settlers.api.settler.Companion;
 import io.github.milkdrinkers.settlers.api.settler.SettlerBuilder;
+import io.github.milkdrinkers.settlers.api.settler.Townfolk;
 import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.exception.InvalidStewardException;
 import io.github.milkdrinkers.stewards.steward.Steward;
@@ -12,7 +12,6 @@ import io.github.milkdrinkers.stewards.trait.ArchitectTrait;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Appearance;
 import net.citizensnpcs.trait.HologramTrait;
-import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -43,10 +42,10 @@ class ExampleCommand {
             if (female)
                 name = Appearance.getFemaleName();
 
-            Companion settler = new SettlerBuilder()
+            Townfolk settler = new SettlerBuilder()
                 .setName(name)
                 .setLocation(((Player) sender).getLocation())
-                .createCompanion();
+                .createTownfolk();
 
             Steward steward = Steward.builder()
                 .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(

@@ -38,7 +38,7 @@ public class TownyListener implements Listener {
             .append(com.palmergames.adventure.text.Component.text("[", NamedTextColor.GRAY))
             .append(com.palmergames.adventure.text.Component.text("Stewards", NamedTextColor.DARK_GREEN)) // TODO hover more info
             .append(com.palmergames.adventure.text.Component.text("] ", NamedTextColor.GRAY))
-            .append(com.palmergames.adventure.text.Component.text("Town bank limit: 10,000⊚.", NamedTextColor.WHITE)) // TODO fetch limit from level
+            .append(com.palmergames.adventure.text.Component.text("Town bank limit: %s⊚.".formatted(TownMetaData.getBankLimit(e.getTown())), NamedTextColor.WHITE)) // TODO fetch limit from level
             .hoverEvent(HoverEvent.showText(hoverComponent));
 
         e.getStatusScreen().addComponentOf("Stewards", bankLimit);

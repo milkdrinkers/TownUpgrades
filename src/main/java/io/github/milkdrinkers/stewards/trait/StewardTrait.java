@@ -1,9 +1,13 @@
 package io.github.milkdrinkers.stewards.trait;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.milkdrinkers.settlers.api.SettlersAPI;
 import io.github.milkdrinkers.stewards.gui.StewardBaseGui;
 import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
+import net.citizensnpcs.api.event.NPCMoveEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -12,18 +16,38 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
+import java.util.UUID;
+
 public class StewardTrait extends Trait {
 
     protected StewardTrait() {
         super("steward");
     }
 
-    @Persist boolean following = false;
+    boolean following = false;
     Player followingPLayer;
     @Persist boolean female; // Stored to keep track of whether the skin and name is "male" or "female"
     @Persist Location anchorLocation;
     @Persist int level;
     @Persist boolean hired = false;
+    @Persist TownBlock townBlock;
+    @Persist UUID townUUID;
+
+    public TownBlock getTownBlock() {
+        return townBlock;
+    }
+
+    public void setTownBlock(TownBlock townBlock) {
+        this.townBlock = townBlock;
+    }
+
+    public UUID getTownUUID() {
+        return townUUID;
+    }
+
+    public void setTownUUID(UUID townUUID) {
+        this.townUUID = townUUID;
+    }
 
     public boolean isFollowing() {
         return following;
@@ -90,15 +114,25 @@ public class StewardTrait extends Trait {
     }
 
     public void load(DataKey key) {
-        following = key.getBoolean("following");
-        anchorLocation = (Location) key.getRaw("anchorlocation");
         female = key.getBoolean("female");
+        hired = key.getBoolean("hired");
+
+        level = key.getInt("level");
+
+        anchorLocation = (Location) key.getRaw("anchorlocation");
+        townUUID = (UUID) key.getRaw("townuuid"); // TODO don't respawn if this doesn't exist
+        townBlock = TownyAPI.getInstance().getTownBlock((WorldCoord) key.getRaw("townblock"));
     }
 
     public void save(DataKey key) {
-        key.setBoolean("following", following);
-        key.setRaw("anchorlocation", anchorLocation);
         key.setBoolean("female", female);
+        key.setBoolean("hired", hired);
+
+        key.setInt("level", level);
+
+        key.setRaw("anchorlocation", anchorLocation);
+        key.setRaw("townuuid", townUUID);
+        key.setRaw("townblock", townBlock.getWorldCoord());
     }
 
     @EventHandler
@@ -116,5 +150,8 @@ public class StewardTrait extends Trait {
 
         StewardBaseGui.createBaseGui(steward, e.getClicker()).open(e.getClicker());
     }
+
+//    @EventHandler
+//    public void onMove(NPCMoveEvent e)
 
 }

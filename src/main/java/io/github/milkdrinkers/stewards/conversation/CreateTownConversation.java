@@ -16,6 +16,7 @@ import com.palmergames.bukkit.towny.utils.NameUtil;
 import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.towny.TownMetaData;
+import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
 import net.kyori.adventure.text.Component;
@@ -161,9 +162,14 @@ public class CreateTownConversation {
             player.sendMessage(ColorParser.of("<green>The town was created!").build()); // TODO charge player for creating town
 
             TownMetaData.setBankLimit(town, Cfg.get().getInt("treasurer.limit.level-0"));
+            TownMetaData.setArchitect(town, steward);
 
             steward.setTownUUID(town.getUUID());
-            steward.setTownBLock(townBlock);
+            steward.setTownBlock(townBlock);
+
+            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).hire();
+            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownBlock(townBlock);
+            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownUUID(town.getUUID());
 
             return Prompt.END_OF_CONVERSATION;
         }

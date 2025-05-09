@@ -41,7 +41,7 @@ public class Steward {
         return townBlock;
     }
 
-    public void setTownBLock(TownBlock townBlock) {
+    public void setTownBlock(TownBlock townBlock) {
         this.townBlock = townBlock;
     }
 

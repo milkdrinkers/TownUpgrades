@@ -5,7 +5,10 @@ import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
 import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import com.palmergames.bukkit.towny.utils.MetaDataUtil;
+import io.github.milkdrinkers.settlers.api.settler.AbstractSettler;
+import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.utility.Cfg;
+import net.citizensnpcs.api.npc.NPC;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -56,10 +59,34 @@ public class TownMetaData {
         MetaDataUtil.setString(town, architectField, uuid.toString(), true);
     }
 
+    public static void setArchitect(Town town, NPC npc) {
+        setArchitect(town, npc.getUniqueId());
+    }
+
+    public static void setArchitect(Town town, AbstractSettler settler) {
+        setArchitect(town, settler.getNpc());
+    }
+
+    public static void setArchitect(Town town, Steward steward) {
+        setArchitect(town, steward.getSettler());
+    }
+
     public static void setBailiff(Town town, UUID uuid) {
         if (!MetaDataUtil.hasMeta(town, bailiff))
             MetaDataUtil.addNewStringMeta(town, bailiff, "", true);
         MetaDataUtil.setString(town, bailiffField, uuid.toString(), true);
+    }
+
+    public static void setBailiff(Town town, NPC npc) {
+        setBailiff(town, npc.getUniqueId());
+    }
+
+    public static void setBailiff(Town town, AbstractSettler settler) {
+        setBailiff(town, settler.getNpc());
+    }
+
+    public static void setBailiff(Town town, Steward steward) {
+        setBailiff(town, steward.getSettler());
     }
 
     public static void setPortmaster(Town town, UUID uuid) {
@@ -68,16 +95,52 @@ public class TownMetaData {
         MetaDataUtil.setString(town, portmasterField, uuid.toString(), true);
     }
 
+    public static void setPortmaster(Town town, NPC npc) {
+        setPortmaster(town, npc.getUniqueId());
+    }
+
+    public static void setPortmaster(Town town, AbstractSettler settler) {
+        setPortmaster(town, settler.getNpc());
+    }
+
+    public static void setPortmaster(Town town, Steward steward) {
+        setPortmaster(town, steward.getSettler());
+    }
+
     public static void setStablemaster(Town town, UUID uuid) {
         if (!MetaDataUtil.hasMeta(town, stablemaster))
             MetaDataUtil.addNewStringMeta(town, stablemaster, "", true);
         MetaDataUtil.setString(town, stablemasterField, uuid.toString(), true);
     }
 
+    public static void setStablemaster(Town town, NPC npc) {
+        setStablemaster(town, npc.getUniqueId());
+    }
+
+    public static void setStablemaster(Town town, AbstractSettler settler) {
+        setStablemaster(town, settler.getNpc());
+    }
+
+    public static void setStablemaster(Town town, Steward steward) {
+        setStablemaster(town, steward.getSettler());
+    }
+
     public static void setTreasurer(Town town, UUID uuid) {
         if (!MetaDataUtil.hasMeta(town, treasurer))
             MetaDataUtil.addNewStringMeta(town, treasurer, "", true);
         MetaDataUtil.setString(town, treasurerField, uuid.toString(), true);
+    }
+
+    public static void setTreasurer(Town town, NPC npc) {
+        setTreasurer(town, npc.getUniqueId());
+    }
+
+    public static void setTreasurer(Town town, AbstractSettler settler) {
+        setTreasurer(town, settler.getNpc());
+    }
+
+    public static void setTreasurer(Town town, Steward steward) {
+        setTreasurer(town, steward.getSettler());
     }
 
     public static @Nullable UUID getArchitect(Town town) {
