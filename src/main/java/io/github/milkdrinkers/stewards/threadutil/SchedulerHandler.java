@@ -1,7 +1,7 @@
 package io.github.milkdrinkers.stewards.threadutil;
 
-import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.threadutil.PlatformBukkit;
 import io.github.milkdrinkers.threadutil.Scheduler;
 

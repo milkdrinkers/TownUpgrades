@@ -1,13 +1,26 @@
 package io.github.milkdrinkers.stewards.listener;
 
+import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.event.HoverEvent;
 import com.palmergames.adventure.text.format.NamedTextColor;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.event.NewDayEvent;
+import com.palmergames.bukkit.towny.event.NewTownEvent;
+import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.economy.TownPreTransactionEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
+import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.economy.transaction.TransactionType;
+import io.github.alathra.alathraports.api.PortsAPI;
 import io.github.milkdrinkers.colorparser.ColorParser;
+import io.github.milkdrinkers.stewards.steward.Steward;
+import io.github.milkdrinkers.stewards.steward.StewardLookup;
 import io.github.milkdrinkers.stewards.towny.TownMetaData;
+import io.github.milkdrinkers.stewards.towny.TownyDataUtil;
+import io.github.milkdrinkers.stewards.trait.StewardTrait;
+import io.github.milkdrinkers.stewards.utility.Cfg;
+import io.github.milkdrinkers.stewards.utility.Logger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -31,16 +44,117 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownStatusScreen(TownStatusScreenEvent e) {
-        com.palmergames.adventure.text.Component hoverComponent =
-            com.palmergames.adventure.text.Component.text("Your banker is level " + 1 + ". To increase this limit, upgrade your banker.", NamedTextColor.GRAY); // TODO fetch level from steward
+        Component hoverComponent;
 
-        com.palmergames.adventure.text.Component bankLimit = com.palmergames.adventure.text.Component.newline()
-            .append(com.palmergames.adventure.text.Component.text("[", NamedTextColor.GRAY))
-            .append(com.palmergames.adventure.text.Component.text("Stewards", NamedTextColor.DARK_GREEN)) // TODO hover more info
-            .append(com.palmergames.adventure.text.Component.text("] ", NamedTextColor.GRAY))
-            .append(com.palmergames.adventure.text.Component.text("Town bank limit: %s⊚.".formatted(TownMetaData.getBankLimit(e.getTown())), NamedTextColor.WHITE)) // TODO fetch limit from level
+        if (TownMetaData.hasTreasurer(e.getTown())) {
+            hoverComponent = Component.text("Your Treasurer is level "
+                + StewardLookup.get().getSteward(TownMetaData.getTreasurer(e.getTown())).getLevel()
+                + ". To increase this limit, upgrade your Treasurer.", NamedTextColor.GRAY);
+        } else {
+            hoverComponent = Component.text("You don't have a Treasurer. To increase this limit, hire a Treasurer.", NamedTextColor.GRAY);
+        }
+
+        Component bankLimit = Component.newline()
+            .append(Component.text("[", NamedTextColor.GRAY))
+            .append(Component.text("Stewards", NamedTextColor.DARK_GREEN))
+            .append(Component.text("] ", NamedTextColor.GRAY))
+            .append(Component.text("Town bank limit: %s⊚.".formatted(TownMetaData.getBankLimit(e.getTown())), NamedTextColor.WHITE))
             .hoverEvent(HoverEvent.showText(hoverComponent));
 
         e.getStatusScreen().addComponentOf("Stewards", bankLimit);
+    }
+
+    @EventHandler
+    public void onNewTown(NewTownEvent e) {
+        Town town = e.getTown();
+
+        if (!TownyDataUtil.isStewardCreatedTown(town.getMayor().getUUID())) return;
+
+        Steward steward = StewardLookup.get().getSteward(TownyDataUtil.getStewardUUID(town.getMayor().getUUID()));
+
+        TownMetaData.setBankLimit(town, Cfg.get().getInt("treasurer.limit.level-0"));
+
+        TownMetaData.setArchitect(town, steward);
+
+        steward.setTownUUID(town.getUUID());
+        steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).hire();
+        steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownUUID(town.getUUID());
+
+        try {
+            steward.setTownBlock(town.getHomeBlock());
+            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownBlock(town.getHomeBlock());
+        } catch (TownyException ex) {
+            Logger.get().error("Couldn't set steward townblock when creating town: " + ex);
+        }
+
+        TownyDataUtil.removePlayerAndSteward(town.getMayor().getUUID());
+    }
+
+    @EventHandler
+    public void onTownRemoved(PreDeleteTownEvent e) {
+        if (TownMetaData.hasArchitect(e.getTown())) {
+            Steward steward = StewardLookup.get().getSteward(TownMetaData.getArchitect(e.getTown()));
+            StewardLookup.get().unregisterSteward(steward);
+            steward.getSettler().delete();
+        }
+
+        if (TownMetaData.hasBailiff(e.getTown())) {
+            Steward steward = StewardLookup.get().getSteward(TownMetaData.getBailiff(e.getTown()));
+            StewardLookup.get().unregisterSteward(steward);
+            steward.getSettler().delete();
+        }
+
+        if (TownMetaData.hasPortmaster(e.getTown())) {
+            Steward steward = StewardLookup.get().getSteward(TownMetaData.getPortmaster(e.getTown()));
+            StewardLookup.get().unregisterSteward(steward);
+            steward.getSettler().delete();
+        }
+
+        if (TownMetaData.hasStablemaster(e.getTown())) {
+            Steward steward = StewardLookup.get().getSteward(TownMetaData.getStablemaster(e.getTown()));
+            StewardLookup.get().unregisterSteward(steward);
+            steward.getSettler().delete();
+        }
+
+        if (TownMetaData.hasTreasurer(e.getTown())) {
+            Steward steward = StewardLookup.get().getSteward(TownMetaData.getTreasurer(e.getTown()));
+            StewardLookup.get().unregisterSteward(steward);
+            steward.getSettler().delete();
+        }
+    }
+
+    @EventHandler
+    public void onNewDay(NewDayEvent e) {
+        for (Town town : TownyAPI.getInstance().getTowns()) {
+            int totalCost = 0;
+            if (TownMetaData.hasPortmaster(town)) {
+                totalCost += Cfg.get().getInt("portmaster.daily-cost.level-" + StewardLookup.get().getSteward(TownMetaData.getPortmaster(town)).getLevel());
+            }
+            if (TownMetaData.hasStablemaster(town)) {
+                totalCost += Cfg.get().getInt("stablemaster.daily-cost.level-" + StewardLookup.get().getSteward(TownMetaData.getStablemaster(town)).getLevel());
+            }
+            if (TownMetaData.hasTreasurer(town)) {
+                totalCost += Cfg.get().getInt("treasurer.daily-cost.level-" + StewardLookup.get().getSteward(TownMetaData.getTreasurer(town)).getLevel());
+            }
+
+            if (totalCost == 0) return;
+
+            if (town.getAccount().canPayFromHoldings(totalCost)) {
+                town.getAccount().withdraw(totalCost, "Stewards: Daily upkeep");
+            } else {
+                if (TownMetaData.hasPortmaster(town)) {
+                    StewardLookup.get().getSteward(TownMetaData.getPortmaster(town)).getSettler().getNpc().getOrAddTrait(StewardTrait.class).setStriking(true);
+                    PortsAPI.setBlockaded(PortsAPI.getPortFromTown(town), true);
+                }
+                if (TownMetaData.hasStablemaster(town)) {
+                    StewardLookup.get().getSteward(TownMetaData.getStablemaster(town)).getSettler().getNpc().getOrAddTrait(StewardTrait.class).setStriking(true);
+                    PortsAPI.setBlockaded(PortsAPI.getCarriageStationFromTown(town), true);
+                }
+                if (TownMetaData.hasTreasurer(town)) {
+                    StewardLookup.get().getSteward(TownMetaData.getTreasurer(town)).getSettler().getNpc().getOrAddTrait(StewardTrait.class).setStriking(true);
+                    TownMetaData.setBankLimit(town, Cfg.get().getInt("treasurer.limit.level-0"));
+                }
+            }
+        }
     }
 }

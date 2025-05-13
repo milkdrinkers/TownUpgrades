@@ -1,8 +1,8 @@
 package io.github.milkdrinkers.stewards.utility;
 
+import io.github.milkdrinkers.crate.Config;
 import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.config.ConfigHandler;
-import io.github.milkdrinkers.crate.Config;
 import org.jetbrains.annotations.NotNull;
 
 /**

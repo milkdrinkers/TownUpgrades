@@ -141,7 +141,7 @@ public class Steward {
             // TODO: API
             if (!Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().isRegistered(stewardType))
                 throw new InvalidStewardException("StewardType is not registered");
-            
+
             if (settler == null)
                 throw new InvalidStewardException("Settler is null");
 

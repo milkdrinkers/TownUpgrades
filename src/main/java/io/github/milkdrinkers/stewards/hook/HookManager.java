@@ -1,9 +1,9 @@
 package io.github.milkdrinkers.stewards.hook;
 
-import io.github.milkdrinkers.stewards.Stewards;
-import io.github.milkdrinkers.stewards.Reloadable;
-import io.github.milkdrinkers.stewards.utility.Logger;
 import io.github.milkdrinkers.colorparser.ColorParser;
+import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
+import io.github.milkdrinkers.stewards.utility.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 

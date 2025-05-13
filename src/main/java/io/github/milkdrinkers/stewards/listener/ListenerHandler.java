@@ -1,7 +1,7 @@
 package io.github.milkdrinkers.stewards.listener;
 
-import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class ListenerHandler implements Reloadable {
 
         // Register listeners here
         for (Listener listener : listeners) {
-            plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+            plugin.getServer().getPluginManager().registerEvents(listener, plugin); // TODO listen for teleports and cancel navigation
         }
     }
 

@@ -1,14 +1,9 @@
-import org.jooq.meta.jaxb.Logging
-
 plugins {
     `java-library`
 
     alias(libs.plugins.shadow) // Shades and relocates dependencies, see https://gradleup.com/shadow/
     alias(libs.plugins.run.paper) // Built in test server using runServer and runMojangMappedServer tasks
     alias(libs.plugins.plugin.yml) // Automatic plugin.yml generation
-    alias(libs.plugins.flyway) // Database migrations
-    alias(libs.plugins.jooq) // Database ORM
-    flywayjooqcache
     projectextensions
     versioner
 
@@ -82,16 +77,7 @@ dependencies {
         exclude("me.clip.placeholderapi.libs", "kyori")
     }
     compileOnly(libs.towny)
-
-    // Database dependencies - Core
-    implementation(libs.hikaricp)
-    library(libs.bundles.flyway)
-    compileOnly(libs.jakarta) // Compiler bug, see: https://github.com/jOOQ/jOOQ/issues/14865#issuecomment-2077182512
-    library(libs.jooq)
-    jooqCodegen(libs.h2)
-
-    // Database dependencies - JDBC drivers
-    library(libs.bundles.jdbcdrivers)
+    compileOnly(files("libs/AlathraPorts-1.0.1-SNAPSHOT-1746917838.jar"))
 
     // Testing - Core
     testImplementation(libs.annotations)
@@ -100,14 +86,6 @@ dependencies {
     testRuntimeOnly(libs.slf4j)
     testImplementation(platform(libs.testcontainers.bom))
     testImplementation(libs.bundles.testcontainers)
-
-    // Testing - Database dependencies
-    testImplementation(libs.hikaricp)
-    testImplementation(libs.bundles.flyway)
-    testImplementation(libs.jooq)
-
-    // Testing - JDBC drivers
-    testImplementation(libs.bundles.jdbcdrivers)
 }
 
 tasks {
@@ -127,8 +105,6 @@ tasks {
         // See https://openjdk.java.net/jeps/247 for more information.
         options.release.set(21)
         options.compilerArgs.addAll(arrayListOf("-Xlint:all", "-Xlint:-processing", "-Xdiags:verbose"))
-
-        dependsOn(jooqCodegen) // Generate jOOQ sources before compilation
     }
 
     javadoc {
@@ -191,7 +167,7 @@ tasks {
 //            url("https://download.luckperms.net/1515/bukkit/loader/LuckPerms-Bukkit-5.4.102.jar")
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
             github("retrooper", "packetevents", "v2.7.0", "packetevents-spigot-2.7.0.jar")
-            github("milkdrinkers", "Settlers", "0.0.1", "Settlers-0.0.1.jar")
+            github("milkdrinkers", "Settlers", "0.0.4", "Settlers-0.0.4.jar")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("ViaVersion", "5.3.2")
             hangar("ViaBackwards", "5.3.2")
@@ -200,7 +176,6 @@ tasks {
 }
 
 tasks.named<Jar>("sourcesJar") { // Required for sources jar generation with jOOQ
-    dependsOn(tasks.jooqCodegen)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
@@ -224,46 +199,4 @@ bukkit { // Options: https://github.com/Minecrell/plugin-yml#bukkit
     softDepend = listOf("PacketEvents", "Vault", "PlaceholderAPI")
     loadBefore = listOf()
     provides = listOf()
-}
-
-flyway {
-    url = "jdbc:h2:${project.layout.buildDirectory.get()}/generated/flyway/db;AUTO_SERVER=TRUE;MODE=MySQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE;IGNORECASE=TRUE"
-    user = "sa"
-    password = ""
-    schemas = listOf("PUBLIC").toTypedArray()
-    placeholders = mapOf( // Substitute placeholders for flyway
-        "tablePrefix" to "",
-    )
-    validateMigrationNaming = true
-    baselineOnMigrate = true
-    cleanDisabled = false
-    locations = arrayOf(
-        "filesystem:src/main/resources/db/migration",
-        "classpath:${mainPackage.replace(".", "/")}/database/migration/migrations"
-    )
-}
-
-jooq {
-    configuration {
-        logging = Logging.ERROR
-        jdbc {
-            driver = "org.h2.Driver"
-            url = flyway.url
-            user = flyway.user
-            password = flyway.password
-        }
-        generator {
-            database {
-                name = "org.jooq.meta.h2.H2Database"
-                includes = ".*"
-                excludes = "(flyway_schema_history)|(?i:information_schema\\..*)|(?i:system_lobs\\..*)"  // Exclude database specific files
-                inputSchema = "PUBLIC"
-                schemaVersionProvider = "SELECT :schema_name || '_' || MAX(\"version\") FROM \"flyway_schema_history\"" // Grab version from Flyway
-            }
-            target {
-                packageName = "${mainPackage}.database.schema"
-                withClean(true)
-            }
-        }
-    }
 }

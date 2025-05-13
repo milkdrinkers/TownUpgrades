@@ -24,25 +24,12 @@ triumph-gui = "dev.triumphteam:triumph-gui:3.1.11"
 
 # Plugin dependencies
 citizens = "net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT"
-settlers = "io.github.milkdrinkers:settlers:0.0.1"
+settlers = "io.github.milkdrinkers:settlers:0.0.4"
 bstats = "org.bstats:bstats-bukkit:3.1.0"
 vault = "com.github.MilkBowl:VaultAPI:1.7.1"
 packetevents = "com.github.retrooper:packetevents-spigot:2.7.0"
 placeholderapi = "me.clip:placeholderapi:2.11.6"
 towny = "com.palmergames.bukkit.towny:towny:0.101.1.5"
-
-# Database dependencies
-hikaricp = "com.zaxxer:HikariCP:6.3.0"
-flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
-flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
-jakarta = "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2" # Compiler bug, see: https://github.com/jOOQ/jOOQ/issues/14865#issuecomment-2077182512
-
-# JDBC drivers
-h2 = "com.h2database:h2:2.3.232"
-sqlite = "org.xerial:sqlite-jdbc:3.49.1.0"
-mysql = "com.mysql:mysql-connector-j:9.2.0"
-mariadb = "org.mariadb.jdbc:mariadb-java-client:3.5.3"
 
 # Testing
 junit-bom = "org.junit:junit-bom:5.12.2"
@@ -51,18 +38,12 @@ junit-platform = { module = "org.junit.platform:junit-platform-launcher" }
 slf4j = "org.slf4j:slf4j-simple:2.0.17"
 testcontainers-bom = "org.testcontainers:testcontainers-bom:1.20.6"
 testcontainers-jupiter = { module = "org.testcontainers:junit-jupiter" }
-testcontainers-mysql = { module = "org.testcontainers:mysql" }
-testcontainers-mariadb = { module = "org.testcontainers:mariadb" }
 
 [bundles]
-flyway = ["flyway-core", "flyway-mysql"]
-jdbcdrivers = ["h2", "sqlite", "mysql", "mariadb"]
 junit = ["junit-jupiter", "junit-platform"]
-testcontainers = ["testcontainers-jupiter", "testcontainers-mysql", "testcontainers-mariadb"]
+testcontainers = ["testcontainers-jupiter"]
 
 [plugins]
 shadow = "com.gradleup.shadow:8.3.6"
 run-paper = "xyz.jpenilla.run-paper:2.3.1"
 plugin-yml = "de.eldoria.plugin-yml.bukkit:0.7.1"
-flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
-jooq = { id = "org.jooq.jooq-codegen-gradle", version.ref = "jooq" }

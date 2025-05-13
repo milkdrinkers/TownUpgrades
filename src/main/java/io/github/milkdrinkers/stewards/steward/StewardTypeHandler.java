@@ -60,7 +60,7 @@ public class StewardTypeHandler implements Reloadable {
 
             StewardType bailiff = StewardType.builder()
                 .setId(BAILIFF_ID)
-                .setMaxLevel(4)
+                .setMaxLevel(3)
                 .setMinLevel(1)
                 .setName("Bailiff")
                 .setStartingLevel(1)
@@ -71,7 +71,7 @@ public class StewardTypeHandler implements Reloadable {
 
             StewardType portmaster = StewardType.builder()
                 .setId(PORTMASTER_ID)
-                .setMaxLevel(4)
+                .setMaxLevel(5)
                 .setMinLevel(1)
                 .setName("Port Master")
                 .setStartingLevel(1)

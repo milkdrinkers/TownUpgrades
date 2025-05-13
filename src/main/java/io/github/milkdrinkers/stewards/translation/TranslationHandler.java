@@ -1,9 +1,9 @@
 package io.github.milkdrinkers.stewards.translation;
 
-import io.github.milkdrinkers.stewards.Stewards;
-import io.github.milkdrinkers.stewards.Reloadable;
-import io.github.milkdrinkers.stewards.config.ConfigHandler;
 import io.github.milkdrinkers.colorparser.ColorParser;
+import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
+import io.github.milkdrinkers.stewards.config.ConfigHandler;
 import io.github.milkdrinkers.wordweaver.Translation;
 import io.github.milkdrinkers.wordweaver.config.TranslationConfig;
 

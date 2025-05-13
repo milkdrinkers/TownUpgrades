@@ -1,8 +1,8 @@
 package io.github.milkdrinkers.stewards.config;
 
-import io.github.milkdrinkers.stewards.Stewards;
-import io.github.milkdrinkers.stewards.Reloadable;
 import io.github.milkdrinkers.crate.Config;
+import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
 
 /**
  * A class that generates/loads {@literal &} provides access to a configuration file.

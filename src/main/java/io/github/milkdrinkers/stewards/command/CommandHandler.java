@@ -2,8 +2,8 @@ package io.github.milkdrinkers.stewards.command;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
 
 /**
  * A class to handle registration of commands.

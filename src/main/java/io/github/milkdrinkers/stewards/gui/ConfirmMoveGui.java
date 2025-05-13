@@ -31,7 +31,7 @@ public class ConfirmMoveGui {
         return gui;
     }
 
-    private static void populateButtons(Gui gui, Steward steward, Player player){
+    private static void populateButtons(Gui gui, Steward steward, Player player) {
         ItemStack backItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
         ItemMeta backMeta = backItem.getItemMeta();
         backMeta.displayName(ColorParser.of("<green>Go back!").build());

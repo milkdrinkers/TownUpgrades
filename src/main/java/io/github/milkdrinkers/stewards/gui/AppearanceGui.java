@@ -1,16 +1,12 @@
 package io.github.milkdrinkers.stewards.gui;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
-import dev.triumphteam.gui.components.GuiType;
 import dev.triumphteam.gui.guis.Gui;
 import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Appearance;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.SkinTrait;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -20,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class AppearanceGui {
 
     public static Gui createGui(Steward steward, Player player) {
-        Gui gui = Gui.gui().title(Component.text("Re-roll name and skin")) // TODO FIX THIS SHIT
+        Gui gui = Gui.gui().title(Component.text("Re-roll name and skin"))
             .rows(1)
             .create();
 
@@ -68,20 +64,13 @@ public class AppearanceGui {
             if (female) {
                 newName = Appearance.getFemaleName();
                 steward.getSettler().getNpc().setName(newName);
-                steward.getSettler().getNpc().getEntity().customName(Component.text(newName));
-                steward.getSettler().getNpc().getEntity().setCustomNameVisible(true); // TODO reimplement this properly after settlers bug is fixed
 
-                Location location = steward.getSettler().getNpc().getEntity().getLocation();
-                steward.getSettler().getNpc().despawn();
-                steward.getSettler().getNpc().spawn(location);
+//                Location location = steward.getSettler().getNpc().getEntity().getLocation();
+//                steward.getSettler().getNpc().despawn();
+//                steward.getSettler().getNpc().spawn(location);
             } else {
                 newName = Appearance.getMaleName();
                 steward.getSettler().getNpc().setName(newName);
-                steward.getSettler().getNpc().data().setPersistent(NPC.Metadata.NAMEPLATE_VISIBLE, true);
-
-                Location location = steward.getSettler().getNpc().getEntity().getLocation();
-                steward.getSettler().getNpc().despawn();
-                steward.getSettler().getNpc().spawn(location);
             }
             gui.close(player);
         }));

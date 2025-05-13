@@ -1,12 +1,12 @@
 package io.github.milkdrinkers.stewards.updatechecker;
 
-import io.github.milkdrinkers.stewards.Stewards;
-import io.github.milkdrinkers.stewards.Reloadable;
-import io.github.milkdrinkers.stewards.utility.Cfg;
-import io.github.milkdrinkers.stewards.utility.Logger;
 import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.javasemver.Version;
 import io.github.milkdrinkers.javasemver.exception.VersionParseException;
+import io.github.milkdrinkers.stewards.Reloadable;
+import io.github.milkdrinkers.stewards.Stewards;
+import io.github.milkdrinkers.stewards.utility.Cfg;
+import io.github.milkdrinkers.stewards.utility.Logger;
 import io.github.milkdrinkers.versionwatch.Platform;
 import io.github.milkdrinkers.versionwatch.VersionWatcher;
 import io.github.milkdrinkers.wordweaver.Translation;

@@ -1,9 +1,8 @@
 package io.github.milkdrinkers.stewards;
 
+import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.stewards.command.CommandHandler;
 import io.github.milkdrinkers.stewards.config.ConfigHandler;
-import io.github.milkdrinkers.stewards.database.handler.DatabaseHandler;
-import io.github.milkdrinkers.stewards.database.handler.DatabaseHandlerBuilder;
 import io.github.milkdrinkers.stewards.hook.HookManager;
 import io.github.milkdrinkers.stewards.listener.ListenerHandler;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
@@ -12,9 +11,7 @@ import io.github.milkdrinkers.stewards.threadutil.SchedulerHandler;
 import io.github.milkdrinkers.stewards.trait.*;
 import io.github.milkdrinkers.stewards.translation.TranslationHandler;
 import io.github.milkdrinkers.stewards.updatechecker.UpdateHandler;
-import io.github.milkdrinkers.stewards.utility.DB;
 import io.github.milkdrinkers.stewards.utility.Logger;
-import io.github.milkdrinkers.colorparser.ColorParser;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
@@ -33,13 +30,12 @@ public class Stewards extends JavaPlugin {
     // Handlers/Managers
     private ConfigHandler configHandler;
     private TranslationHandler translationHandler;
-    private DatabaseHandler databaseHandler;
     private HookManager hookManager;
     private CommandHandler commandHandler;
     private ListenerHandler listenerHandler;
     private UpdateHandler updateHandler;
     private SchedulerHandler schedulerHandler;
-        // Steward handlers
+    // Steward handlers
     private StewardTypeHandler stewardTypeHandler;
     private StewardLookup stewardLookup;
 
@@ -62,10 +58,6 @@ public class Stewards extends JavaPlugin {
 
         configHandler = new ConfigHandler(this);
         translationHandler = new TranslationHandler(configHandler);
-        databaseHandler = new DatabaseHandlerBuilder()
-            .withConfigHandler(configHandler)
-            .withLogger(getComponentLogger())
-            .build();
         hookManager = new HookManager(this);
         stewardTypeHandler = new StewardTypeHandler();
         stewardLookup = new StewardLookup(this);
@@ -77,7 +69,6 @@ public class Stewards extends JavaPlugin {
         handlers = List.of(
             configHandler,
             translationHandler,
-            databaseHandler,
             hookManager,
             stewardTypeHandler,
             stewardLookup,
@@ -87,7 +78,6 @@ public class Stewards extends JavaPlugin {
             schedulerHandler
         );
 
-        DB.init(databaseHandler);
         for (Reloadable handler : handlers)
             handler.onLoad(instance);
     }
@@ -96,11 +86,6 @@ public class Stewards extends JavaPlugin {
     public void onEnable() {
         for (Reloadable handler : handlers)
             handler.onEnable(instance);
-
-        if (!DB.isReady()) {
-            Logger.get().warn(ColorParser.of("<yellow>DatabaseHolder handler failed to start. Database support has been disabled.").build());
-            Bukkit.getPluginManager().disablePlugin(this);
-        }
 
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(StewardTrait.class).withName("steward"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ArchitectTrait.class).withName("architect"));
@@ -167,8 +152,6 @@ public class Stewards extends JavaPlugin {
 
     /**
      * Gets StewardLookup instance
-     *
-     *
      */
     @NotNull
     public StewardLookup getStewardLookup() {

@@ -35,7 +35,7 @@ class ExampleCommand {
             .register();
     }
 
-    private void executorExample(CommandSender sender, CommandArguments args)  {
+    private void executorExample(CommandSender sender, CommandArguments args) {
         try {
             boolean female = Math.random() > 0.5; // TODO most up to date spawn logic.
             String name = Appearance.getMaleName();

@@ -1,13 +1,10 @@
 package io.github.milkdrinkers.stewards.trait;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.WorldCoord;
-import io.github.milkdrinkers.settlers.api.SettlersAPI;
+import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.stewards.gui.StewardBaseGui;
 import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
-import net.citizensnpcs.api.event.NPCMoveEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -25,13 +22,21 @@ public class StewardTrait extends Trait {
     }
 
     boolean following = false;
-    Player followingPLayer;
-    @Persist boolean female; // Stored to keep track of whether the skin and name is "male" or "female"
-    @Persist Location anchorLocation;
-    @Persist int level;
-    @Persist boolean hired = false;
-    @Persist TownBlock townBlock;
-    @Persist UUID townUUID;
+    Player followingPlayer;
+    @Persist
+    boolean female; // Stored to keep track of whether the skin and name is "male" or "female"
+    @Persist
+    Location anchorLocation;
+    @Persist
+    int level;
+    @Persist
+    boolean hired = false;
+    @Persist
+    TownBlock townBlock;
+    @Persist
+    UUID townUUID;
+    @Persist
+    boolean striking = false;
 
     public TownBlock getTownBlock() {
         return townBlock;
@@ -82,11 +87,11 @@ public class StewardTrait extends Trait {
     }
 
     public Player getFollowingPlayer() {
-        return followingPLayer;
+        return followingPlayer;
     }
 
     public void setFollowingPlayer(Player player) {
-        this.followingPLayer = player;
+        this.followingPlayer = player;
     }
 
     public boolean isHired() {
@@ -99,6 +104,14 @@ public class StewardTrait extends Trait {
 
     public void hire() {
         this.hired = true;
+    }
+
+    public boolean isStriking() {
+        return striking;
+    }
+
+    public void setStriking(boolean striking) {
+        this.striking = striking;
     }
 
     /**
@@ -116,23 +129,25 @@ public class StewardTrait extends Trait {
     public void load(DataKey key) {
         female = key.getBoolean("female");
         hired = key.getBoolean("hired");
+        striking = key.getBoolean("striking");
 
         level = key.getInt("level");
 
         anchorLocation = (Location) key.getRaw("anchorlocation");
         townUUID = (UUID) key.getRaw("townuuid"); // TODO don't respawn if this doesn't exist
-        townBlock = TownyAPI.getInstance().getTownBlock((WorldCoord) key.getRaw("townblock"));
+        townBlock = (TownBlock) key.getRaw("townblock");
     }
 
     public void save(DataKey key) {
         key.setBoolean("female", female);
         key.setBoolean("hired", hired);
+        key.setBoolean("striking", striking);
 
         key.setInt("level", level);
 
         key.setRaw("anchorlocation", anchorLocation);
         key.setRaw("townuuid", townUUID);
-        key.setRaw("townblock", townBlock.getWorldCoord());
+        key.setRaw("townblock", townBlock);
     }
 
     @EventHandler
@@ -145,13 +160,63 @@ public class StewardTrait extends Trait {
 
         if (!following && StewardLookup.get().isPlayerFollowed(e.getClicker())) return;
 
-        Steward steward = StewardLookup.get().getSteward(SettlersAPI.getSettler(e.getNPC()));
+        if (striking) {
+            e.getClicker().sendMessage(ColorParser.of("<red>This steward is currently striking. Talk to your architect to get them back.").build());
+            return;
+        }
+
+        Steward steward = StewardLookup.get().getSteward((e.getNPC()));
         if (steward == null) return;
 
         StewardBaseGui.createBaseGui(steward, e.getClicker()).open(e.getClicker());
     }
 
 //    @EventHandler
-//    public void onMove(NPCMoveEvent e)
+//    public void onMove(NPCMoveEvent e) {
+//        if (e.getNPC() != this.getNPC()) return;
+//        if (e.getNPC().hasTrait(ArchitectTrait.class) && !hired) return;
+//
+//        if (TownyAPI.getInstance().getTown(e.getTo()) == null) {
+//            e.setCancelled(true);
+//
+//            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
+//            followingPlayer.sendMessage("<red>Stewards aren't allowed to move outside of their town.");
+//
+//            following = false;
+//            followingPlayer = null;
+//            npc.getNavigator().setTarget(anchorLocation);
+//            return;
+//        }
+//
+//        if (!TownyAPI.getInstance().getTown(e.getTo()).getUUID().equals(townUUID)) {
+//            e.setCancelled(true);
+//
+//            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
+//            followingPlayer.sendMessage("<red>Stewards aren't allowed to move outside of their town.");
+//
+//            following = false;
+//            followingPlayer = null;
+//            npc.getNavigator().setTarget(anchorLocation);
+//        }
+//    }
+
+//    @Override
+//    public void run() {
+//        if (!following) return;
+//        if (npc.getEntity().getLocation() == anchorLocation) return;
+//        if (npc.hasTrait(ArchitectTrait.class) && !hired) return;
+//
+//        if (TownyAPI.getInstance().getTown(npc.getEntity().getLocation()) == null
+//            || !TownyAPI.getInstance().getTown(npc.getEntity().getLocation()).getUUID().equals(townUUID) ) {
+//
+//            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
+//            followingPlayer.sendMessage("<red>Stewards aren't allowed to move outside of their town.");
+//
+//            following = false;
+//            followingPlayer = null;
+//            npc.getNavigator().setTarget(anchorLocation);
+//            return;
+//        }
+//    }
 
 }

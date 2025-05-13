@@ -1,6 +1,5 @@
 package io.github.milkdrinkers.stewards.listener;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import io.github.milkdrinkers.settlers.api.event.settler.lifetime.spawning.SettlerSpawnEvent;
 import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.exception.InvalidStewardException;

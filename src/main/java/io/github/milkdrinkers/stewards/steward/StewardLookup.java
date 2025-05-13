@@ -71,6 +71,22 @@ public class StewardLookup implements Reloadable {
         settlerStewardHashmap.put(steward.getSettler().getNpc().getUniqueId(), steward);
     }
 
+    public void unregisterSteward(UUID uuid) {
+        settlerStewardHashmap.remove(uuid);
+    }
+
+    public void unregisterSteward(NPC npc) {
+        unregisterSteward(npc.getUniqueId());
+    }
+
+    public void unregisterSteward(AbstractSettler settler) {
+        unregisterSteward(settler.getNpc());
+    }
+
+    public void unregisterSteward(Steward steward) {
+        unregisterSteward(steward.getSettler());
+    }
+
     @Override
     public void onLoad(Stewards plugin) {
 

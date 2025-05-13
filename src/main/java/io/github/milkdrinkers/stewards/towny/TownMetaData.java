@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import com.palmergames.bukkit.towny.utils.MetaDataUtil;
 import io.github.milkdrinkers.settlers.api.settler.AbstractSettler;
 import io.github.milkdrinkers.stewards.steward.Steward;
+import io.github.milkdrinkers.stewards.steward.StewardLookup;
 import io.github.milkdrinkers.stewards.utility.Cfg;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -32,6 +33,22 @@ public class TownMetaData {
     private static final StringDataField portmasterField = new StringDataField(portmaster);
     private static final StringDataField stablemasterField = new StringDataField(stablemaster);
     private static final StringDataField treasurerField = new StringDataField(treasurer);
+
+    public static void removeBailiff(Town town) {
+        MetaDataUtil.setString(town, bailiffField, null, true);
+    }
+
+    public static void removePortmaster(Town town) {
+        MetaDataUtil.setString(town, portmasterField, null, true);
+    }
+
+    public static void removeStablemaster(Town town) {
+        MetaDataUtil.setString(town, stablemasterField, null, true);
+    }
+
+    public static void removeTreasurer(Town town) {
+        MetaDataUtil.setString(town, treasurerField, null, true);
+    }
 
     public static boolean hasArchitect(Town town) {
         return MetaDataUtil.getString(town, architectField) != null && !MetaDataUtil.getString(town, architectField).isEmpty();
@@ -186,8 +203,13 @@ public class TownMetaData {
     }
 
     public static int getBankLimit(Town town) {
-        if (!MetaDataUtil.hasMeta(town, bankLimit))
-            MetaDataUtil.addNewIntegerMeta(town, bankLimit, Cfg.get().getInt("treasurer.limit.level-0"), true); // TODO Get level of banker and set limit
+        if (!MetaDataUtil.hasMeta(town, bankLimit)) {
+            if (hasTreasurer(town)) {
+                MetaDataUtil.addNewIntegerMeta(town, bankLimit, Cfg.get().getInt("treasurer.limit.level-" + StewardLookup.get().getSteward(getTreasurer(town)).getLevel()), true);
+            } else {
+                MetaDataUtil.addNewIntegerMeta(town, bankLimit, Cfg.get().getInt("treasurer.limit.level-0"), true);
+            }
+        }
         return MetaDataUtil.getInt(town, bankLimitField);
     }
 
