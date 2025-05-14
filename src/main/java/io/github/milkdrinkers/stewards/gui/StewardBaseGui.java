@@ -203,34 +203,41 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
 
         if (steward.getStewardType() == Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(Stewards.getInstance().getStewardTypeHandler().PORTMASTER_ID)) {
 
-            gui.setItem(3, 3, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
-                if (steward.getLevel() < steward.getStewardType().getMaxLevel()) {
-                    ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
-                } else {
-                    gui.close(player);
-                    player.sendMessage(ColorParser.of("<red>You've reached the maximum level for this steward.").build());
-                }
-            }));
+            if (TownyAPI.getInstance().getResident(player).isMayor()) {
+                gui.setItem(3, 3, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
+                    if (steward.getLevel() < steward.getStewardType().getMaxLevel()) {
+                        ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
+                    } else {
+                        gui.close(player);
+                        player.sendMessage(ColorParser.of("<red>You've reached the maximum level for this steward.").build());
+                    }
+                }));
+
+                gui.setItem(3, 7, ItemBuilder.from(fireItem).asGuiItem(event -> {
+                    ConfirmFireGui.createGui(steward, player).open(player);
+                }));
+            }
 
             ItemStack portItem = new ItemStack(Material.OAK_BOAT);
             ItemMeta portMeta = portItem.getItemMeta();
             portMeta.displayName(ColorParser.of("<green>Open travel menu").build());
             portMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             portItem.setItemMeta(portMeta);
-
             gui.setItem(3, 5, ItemBuilder.from(portItem).asGuiItem(event -> {
                 PortsAPI.openTravelMenu(player, PortsAPI.getPortFromTown(TownyAPI.getInstance().getTown(steward.getTownUUID())));
             }));
 
-            gui.setItem(3, 7, ItemBuilder.from(fireItem).asGuiItem(event -> {
-                ConfirmFireGui.createGui(steward, player).open(player);
-            }));
-
         } else if (steward.getStewardType() == Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(Stewards.getInstance().getStewardTypeHandler().STABLEMASTER_ID)) {
 
-            gui.setItem(3, 3, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
-                ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
-            }));
+            if (TownyAPI.getInstance().getResident(player).isMayor()) {
+                gui.setItem(3, 3, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
+                    ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
+                }));
+
+                gui.setItem(3, 7, ItemBuilder.from(fireItem).asGuiItem(event -> {
+                    ConfirmFireGui.createGui(steward, player).open(player);
+                }));
+            }
 
             ItemStack stationItem = new ItemStack(Material.SADDLE);
             ItemMeta stationMeta = stationItem.getItemMeta();
@@ -240,10 +247,6 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
 
             gui.setItem(3, 5, ItemBuilder.from(stationItem).asGuiItem(event -> {
                 PortsAPI.openTravelMenu(player, PortsAPI.getCarriageStationFromTown(TownyAPI.getInstance().getTown(steward.getTownUUID())));
-            }));
-
-            gui.setItem(3, 7, ItemBuilder.from(fireItem).asGuiItem(event -> {
-                ConfirmFireGui.createGui(steward, player).open(player);
             }));
 
         } else {
@@ -477,9 +480,10 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
                 .setIsHidden(false)
                 .setLevel(1)
                 .setSettler(settler)
+                .setTownUUID(TownyAPI.getInstance().getTown(player).getUUID())
                 .build();
 
-            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class);
+            steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownUUID(TownyAPI.getInstance().getTown(player).getUUID());
 
             HologramTrait hologramTrait = steward.getSettler().getNpc().getOrAddTrait(HologramTrait.class);
             hologramTrait.addLine(steward.getStewardType().getName());

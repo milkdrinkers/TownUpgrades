@@ -1,5 +1,6 @@
 package io.github.milkdrinkers.stewards.trait;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.stewards.gui.StewardBaseGui;
@@ -156,6 +157,12 @@ public class StewardTrait extends Trait {
 
         if (e.getClicker().isSneaking()) return;
 
+        if (!TownyAPI.getInstance().getResident(e.getClicker()).isMayor() &&
+            (this.getNPC().hasTrait(PortmasterTrait.class) || this.getNPC().hasTrait(StablemasterTrait.class))) {
+            e.getClicker().sendMessage(ColorParser.of("<red>You must be mayor or co-mayor to interact with stewards.").build());
+            return;
+        }
+
         if (following && e.getClicker() != this.getFollowingPlayer()) return;
 
         if (!following && StewardLookup.get().isPlayerFollowed(e.getClicker())) return;
@@ -200,23 +207,23 @@ public class StewardTrait extends Trait {
 //        }
 //    }
 
-//    @Override
-//    public void run() {
-//        if (!following) return;
-//        if (npc.getEntity().getLocation() == anchorLocation) return;
-//        if (npc.hasTrait(ArchitectTrait.class) && !hired) return;
-//
-//        if (TownyAPI.getInstance().getTown(npc.getEntity().getLocation()) == null
-//            || !TownyAPI.getInstance().getTown(npc.getEntity().getLocation()).getUUID().equals(townUUID) ) {
-//
-//            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
-//            followingPlayer.sendMessage("<red>Stewards aren't allowed to move outside of their town.");
-//
-//            following = false;
-//            followingPlayer = null;
-//            npc.getNavigator().setTarget(anchorLocation);
-//            return;
-//        }
-//    }
+    @Override
+    public void run() {
+        if (!following) return;
+        if (npc.getEntity().getLocation() == anchorLocation) return;
+        if (npc.hasTrait(ArchitectTrait.class) && !hired) return;
+
+        if (TownyAPI.getInstance().getTown(npc.getEntity().getLocation()) == null
+            || !TownyAPI.getInstance().getTown(npc.getEntity().getLocation()).getUUID().equals(townUUID) ) {
+
+            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
+            followingPlayer.sendMessage(ColorParser.of("<red>Stewards aren't allowed to move outside of their town.").build());
+
+            following = false;
+            followingPlayer = null;
+            npc.getNavigator().setTarget(anchorLocation);
+            return;
+        }
+    }
 
 }
