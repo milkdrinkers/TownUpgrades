@@ -32,10 +32,11 @@ public class ListenerHandler implements Reloadable {
         listeners.clear(); // Clear the list to avoid duplicate listeners when reloading the plugin
         listeners.add(new TownyListener());
         listeners.add(new SettlersListener());
+        listeners.add(new PlayerListener());
 
         // Register listeners here
         for (Listener listener : listeners) {
-            plugin.getServer().getPluginManager().registerEvents(listener, plugin); // TODO listen for teleports and cancel navigation
+            plugin.getServer().getPluginManager().registerEvents(listener, plugin);
         }
     }
 
