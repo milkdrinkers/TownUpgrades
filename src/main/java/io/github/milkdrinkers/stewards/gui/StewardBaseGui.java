@@ -111,7 +111,7 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
 
         gui.setItem(5, 9, ItemBuilder.from(exitItem).asGuiItem(event -> gui.close(player)));
 
-        ItemStack appearanceItem = new ItemStack(Material.PAPER);
+        ItemStack appearanceItem = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta appearanceMeta = appearanceItem.getItemMeta();
         appearanceMeta.displayName(ColorParser.of("<green>Re-roll name and skin").build());
         appearanceMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -120,14 +120,14 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
         gui.setItem(5, 1, ItemBuilder.from(appearanceItem).asGuiItem(event -> AppearanceGui.createGui(steward, player).open(player)));
 
 
-        ItemStack followItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack followItem = new ItemStack(Material.LEAD);
         ItemMeta followMeta = followItem.getItemMeta();
 
 
-        if (steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).isFollowing()) {
-            followMeta.displayName(ColorParser.of("<green>Stop following!").build());
+        if (steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).isFollowing()) { // TODO NO ITALICS IN NAMES
+            followMeta.displayName(ColorParser.of("<green>Stop following").build());
         } else {
-            followMeta.displayName(ColorParser.of("<green>Follow me!").build());
+            followMeta.displayName(ColorParser.of("<green>Follow me").build());
         }
 
         followMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -152,7 +152,7 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
     private static void populateUnHiredButtons(Gui gui, Steward steward, Player player) {
         int cost = Cfg.get().getInt(steward.getStewardType().getName().toLowerCase().replace(" ", "") + ".upgrade-cost.level-1");
 
-        ItemStack hireItem = new ItemStack(Material.PAPER);
+        ItemStack hireItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta hireMeta = hireItem.getItemMeta();
         hireMeta.displayName(ColorParser.of("<green>Hire steward").build());
         hireMeta.lore(List.of(ColorParser.of("<grey>Hiring this steward costs <cost>⊚.")
@@ -160,7 +160,7 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
         hireMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         hireItem.setItemMeta(hireMeta);
 
-        ItemStack dismissItem = new ItemStack(Material.BARRIER);
+        ItemStack dismissItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta dismissMeta = dismissItem.getItemMeta();
         dismissMeta.displayName(ColorParser.of("<red>Dismiss Steward").build());
         dismissMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -179,7 +179,7 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
         int cost = Cfg.get().getInt(steward.getStewardType().getName().toLowerCase()
             .replace(" ", "") + ".upgrade-cost.level-" + (steward.getLevel() + 1));
 
-        ItemStack upgradeItem = new ItemStack(Material.PAPER);
+        ItemStack upgradeItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta upgradeMeta = upgradeItem.getItemMeta();
 
         if (steward.getLevel() < steward.getStewardType().getMaxLevel()) {
@@ -195,7 +195,7 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
         upgradeMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         upgradeItem.setItemMeta(upgradeMeta);
 
-        ItemStack fireItem = new ItemStack(Material.PAPER);
+        ItemStack fireItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta fireMeta = fireItem.getItemMeta();
         fireMeta.displayName(ColorParser.of("<red>Fire steward").build());
         fireMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -261,14 +261,14 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
     }
 
     private static void populateArchitectNoTownButtons(Gui gui, Steward steward, Player player) {
-        ItemStack townItem = new ItemStack(Material.PAPER);
+        ItemStack townItem = new ItemStack(Material.RED_BED);
         ItemMeta townMeta = townItem.getItemMeta();
         townMeta.displayName(ColorParser.of("<green>Create town").build());
         townMeta.lore(List.of(ColorParser.of("<grey>Creating a town costs " + Math.round(TownySettings.getNewTownPrice()) + "⊚").build()));
         townMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         townItem.setItemMeta(townMeta);
 
-        ItemStack dismissItem = new ItemStack(Material.BARRIER);
+        ItemStack dismissItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta dismissMeta = dismissItem.getItemMeta();
         dismissMeta.displayName(ColorParser.of("<red>Dismiss Steward").build());
         dismissMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);

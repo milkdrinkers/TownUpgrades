@@ -32,21 +32,21 @@ public class ConfirmMoveGui {
     }
 
     private static void populateButtons(Gui gui, Steward steward, Player player) {
-        ItemStack backItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack backItem = new ItemStack(Material.RED_BED);
         ItemMeta backMeta = backItem.getItemMeta();
-        backMeta.displayName(ColorParser.of("<green>Go back!").build());
+        backMeta.displayName(ColorParser.of("<green>Go back to previous location").build());
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         backItem.setItemMeta(backMeta);
 
-        ItemStack stayItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack stayItem = new ItemStack(Material.GRASS_BLOCK);
         ItemMeta stayMeta = stayItem.getItemMeta();
-        stayMeta.displayName(ColorParser.of("<green>Stay here!").build());
+        stayMeta.displayName(ColorParser.of("<green>Stay here").build());
         stayMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         stayItem.setItemMeta(stayMeta);
 
-        ItemStack continueItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack continueItem = new ItemStack(Material.LEAD);
         ItemMeta continueMeta = continueItem.getItemMeta();
-        continueMeta.displayName(ColorParser.of("<green>Keep following!").build());
+        continueMeta.displayName(ColorParser.of("<green>Keep following").build());
         continueMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         continueItem.setItemMeta(continueMeta);
 

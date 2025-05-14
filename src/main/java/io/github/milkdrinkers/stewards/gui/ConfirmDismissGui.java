@@ -32,16 +32,16 @@ public class ConfirmDismissGui {
     }
 
     private static void populateButtons(Gui gui, Steward steward, Player player) {
-        ItemStack dismissItem = new ItemStack(Material.PAPER);
+        ItemStack dismissItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta dismissMeta = dismissItem.getItemMeta();
         dismissMeta.displayName(ColorParser.of("<red>Dismiss steward").build());
         dismissMeta.lore(List.of(ColorParser.of("<red>This action is permanent and cannot be undone.").build()));
         dismissMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         dismissItem.setItemMeta(dismissMeta);
 
-        ItemStack backItem = new ItemStack(Material.PAPER);
+        ItemStack backItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta backMeta = backItem.getItemMeta();
-        backMeta.displayName(ColorParser.of("<red>Back").build());
+        backMeta.displayName(ColorParser.of("<red>Cancel").build());
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         backItem.setItemMeta(backMeta);
 

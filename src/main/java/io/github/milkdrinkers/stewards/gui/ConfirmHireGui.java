@@ -41,14 +41,14 @@ public class ConfirmHireGui {
     }
 
     private static void populateButtons(Gui gui, Steward steward, Player player, int cost) {
-        ItemStack hireItem = new ItemStack(Material.PAPER);
+        ItemStack hireItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta hireMeta = hireItem.getItemMeta();
         hireMeta.displayName(ColorParser.of("<green>Hire " + steward.getStewardType().getName()).build());
         hireMeta.lore(List.of(ColorParser.of("<grey>Hiring this steward costs " + cost + "⊚.").build()));
         hireMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         hireItem.setItemMeta(hireMeta);
 
-        ItemStack backItem = new ItemStack(Material.PAPER);
+        ItemStack backItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta backMeta = backItem.getItemMeta();
         backMeta.displayName(ColorParser.of("<red>Back").build());
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);

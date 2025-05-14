@@ -43,16 +43,16 @@ public class ConfirmFireGui {
     }
 
     private static void populateButtons(Gui gui, Steward steward, Player player) {
-        ItemStack fireItem = new ItemStack(Material.PAPER);
+        ItemStack fireItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta fireMeta = fireItem.getItemMeta();
         fireMeta.displayName(ColorParser.of("<green>Hire " + steward.getStewardType().getName()).build());
         fireMeta.lore(List.of(ColorParser.of("<grey>This action is permanent and cannot be undone.").build()));
         fireMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         fireItem.setItemMeta(fireMeta);
 
-        ItemStack backItem = new ItemStack(Material.PAPER);
+        ItemStack backItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta backMeta = backItem.getItemMeta();
-        backMeta.displayName(ColorParser.of("<red>Back").build());
+        backMeta.displayName(ColorParser.of("<red>Cancel").build());
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         backItem.setItemMeta(backMeta);
 

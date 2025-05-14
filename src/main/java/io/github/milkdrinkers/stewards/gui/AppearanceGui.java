@@ -41,25 +41,25 @@ public class AppearanceGui {
 
         gui.setItem(1, 9, ItemBuilder.from(exitItem).asGuiItem(event -> StewardBaseGui.createBaseGui(steward, player).open(player)));
 
-        ItemStack nameItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack nameItem = new ItemStack(Material.NAME_TAG);
         ItemMeta nameMeta = nameItem.getItemMeta();
         nameMeta.displayName(ColorParser.of("<green>Re-roll name").build());
         nameMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         nameItem.setItemMeta(nameMeta);
 
-        ItemStack skinItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack skinItem = new ItemStack(Material.LEATHER_CHESTPLATE);
         ItemMeta skinMeta = skinItem.getItemMeta();
         skinMeta.displayName(ColorParser.of("<green>Re-roll skin").build());
         skinMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         skinItem.setItemMeta(skinMeta);
 
-        ItemStack nameAndSkinItem = new ItemStack(Material.PAPER); // TODO: Placeholder item
+        ItemStack nameAndSkinItem = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta nameAndSkinMeta = nameAndSkinItem.getItemMeta();
-        nameAndSkinMeta.displayName(ColorParser.of("<green>Re-roll name and skin!").build());
+        nameAndSkinMeta.displayName(ColorParser.of("<green>Re-roll name and skin").build());
         nameAndSkinMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         nameAndSkinItem.setItemMeta(nameAndSkinMeta);
 
-        gui.setItem(1, 3, ItemBuilder.from(nameItem).asGuiItem(e -> {
+        gui.setItem(1, 2, ItemBuilder.from(nameItem).asGuiItem(e -> {
             String newName;
             if (female) {
                 newName = Appearance.getFemaleName();
@@ -75,7 +75,7 @@ public class AppearanceGui {
             gui.close(player);
         }));
 
-        gui.setItem(1, 5, ItemBuilder.from(skinItem).asGuiItem(e -> {
+        gui.setItem(1, 4, ItemBuilder.from(skinItem).asGuiItem(e -> {
             if (female) {
                 Appearance.applyFemaleStewardSkin(steward);
             } else {
@@ -84,7 +84,7 @@ public class AppearanceGui {
             gui.close(player);
         }));
 
-        gui.setItem(1, 7, ItemBuilder.from(nameAndSkinItem).asGuiItem(e -> {
+        gui.setItem(1, 6, ItemBuilder.from(nameAndSkinItem).asGuiItem(e -> {
             boolean femaleNew = Math.random() > 0.5;
             String newName;
 

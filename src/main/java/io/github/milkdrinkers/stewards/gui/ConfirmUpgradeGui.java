@@ -42,14 +42,14 @@ public class ConfirmUpgradeGui {
     }
 
     private static void populateButtons(Gui gui, Steward steward, Player player, int cost) {
-        ItemStack upgradeItem = new ItemStack(Material.PAPER);
+        ItemStack upgradeItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta upgradeMeta = upgradeItem.getItemMeta();
         upgradeMeta.displayName(ColorParser.of("<green>Upgrade " + steward.getStewardType().getName()).build());
         upgradeMeta.lore(List.of(ColorParser.of("<grey>Upgrading costs " + cost + "⊚.").build()));
         upgradeMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         upgradeItem.setItemMeta(upgradeMeta);
 
-        ItemStack backItem = new ItemStack(Material.PAPER);
+        ItemStack backItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta backMeta = backItem.getItemMeta();
         backMeta.displayName(ColorParser.of("<red>Back").build());
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
