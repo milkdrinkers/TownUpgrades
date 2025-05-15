@@ -1,10 +1,12 @@
 package io.github.milkdrinkers.stewards.gui;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.components.GuiType;
 import dev.triumphteam.gui.guis.Gui;
 import io.github.milkdrinkers.colorparser.ColorParser;
 import io.github.milkdrinkers.stewards.steward.Steward;
+import io.github.milkdrinkers.stewards.towny.TownMetaData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -48,6 +50,7 @@ public class ConfirmDismissGui {
         gui.setItem(1, 2, ItemBuilder.from(dismissItem).asGuiItem(e -> {
             gui.close(player);
             steward.getSettler().getNpc().destroy();
+            TownMetaData.setUnhiredSteward(TownyAPI.getInstance().getTown(player), false);
         }));
 
         gui.setItem(1, 4, ItemBuilder.from(backItem).asGuiItem(e -> {
