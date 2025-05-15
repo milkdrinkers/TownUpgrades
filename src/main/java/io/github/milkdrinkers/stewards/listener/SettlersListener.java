@@ -1,5 +1,9 @@
 package io.github.milkdrinkers.stewards.listener;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import io.github.alathra.alathraports.api.PortsAPI;
+import io.github.milkdrinkers.settlers.api.enums.RemoveReason;
+import io.github.milkdrinkers.settlers.api.event.settler.lifecycle.SettlerRemoveEvent;
 import io.github.milkdrinkers.settlers.api.event.settler.lifetime.spawning.SettlerSpawnEvent;
 import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.exception.InvalidStewardException;
@@ -23,8 +27,10 @@ public class SettlersListener implements Listener {
         // This theoretically shouldn't change anything, as the anchor location should always update as the NPC moves
         stewardTrait.setAnchorLocation(e.getLocation());
 
+        if (!stewardTrait.isHired()) e.getSettler().delete();
+
         // If the Steward doesn't have at least one of these traits, something is wrong.
-        if (e.getSettler().getNpc().hasTrait(ArchitectTrait.class)) { // TODO destroy settler if not hired on load?
+        if (e.getSettler().getNpc().hasTrait(ArchitectTrait.class)) {
             try {
                 Steward steward = Steward.builder()
                     .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
@@ -112,6 +118,20 @@ public class SettlersListener implements Listener {
         }
 
 
+    }
+
+    @EventHandler
+    public void onSettlerDelete(SettlerRemoveEvent e) {
+        if (e.getReason() != RemoveReason.COMMAND) return;
+
+        if (!e.getSettler().getNpc().hasTrait(StewardTrait.class)) return;
+
+        // This should only run if a steward was deleted using commands, in which case the port/carriage station would not get removed - so we remove it.
+        if (e.getSettler().getNpc().hasTrait(PortmasterTrait.class)) {
+            PortsAPI.deleteAbstractPort(PortsAPI.getPortFromTown(TownyAPI.getInstance().getTown(StewardLookup.get().getSteward(e.getSettler()).getTownUUID())));
+        } else if (e.getSettler().getNpc().hasTrait(StablemasterTrait.class)) {
+            PortsAPI.deleteAbstractCarriageStation(PortsAPI.getCarriageStationFromTown(TownyAPI.getInstance().getTown(StewardLookup.get().getSteward(e.getSettler()).getTownUUID())));
+        }
     }
 
 }
