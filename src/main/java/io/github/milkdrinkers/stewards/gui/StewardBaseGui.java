@@ -148,7 +148,7 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
             }
         }));
 
-        ItemStack infoItem = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack infoItem = new ItemStack(Material.BOOK);
         ItemMeta infoMeta = infoItem.getItemMeta();
         infoMeta.displayName(ColorParser.of("<green>" + steward.getSettler().getNpc().getName()).build());
         infoMeta.lore(List.of(
