@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.event.NewTownEvent;
 import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.economy.TownPreTransactionEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
+import com.palmergames.bukkit.towny.event.town.TownPreUnclaimEvent;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.economy.transaction.TransactionType;
@@ -154,6 +155,46 @@ public class TownyListener implements Listener {
                     StewardLookup.get().getSteward(TownMetaData.getTreasurer(town)).getSettler().getNpc().getOrAddTrait(StewardTrait.class).setStriking(true);
                     TownMetaData.setBankLimit(town, Cfg.get().getInt("treasurer.limit.level-0"));
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onUnclaim(TownPreUnclaimEvent e) {
+        if (TownMetaData.hasArchitect(e.getTown())) {
+            if (StewardLookup.get().getSteward(TownMetaData.getArchitect(e.getTown())).getTownBlock().getWorldCoord().equals(e.getTownBlock().getWorldCoord())) {
+                e.setCancelMessage("There is a steward in this chunk. Move them to another chunk to unclaim this chunk.");
+                e.setCancelled(true);
+            }
+        }
+
+        if (TownMetaData.hasBailiff(e.getTown())) {
+            if (StewardLookup.get().getSteward(TownMetaData.getBailiff(e.getTown())).getTownBlock().getWorldCoord().equals(e.getTownBlock().getWorldCoord())) {
+                e.setCancelMessage("There is a steward in this chunk. Move them to another chunk to unclaim this chunk.");
+                e.setCancelled(true);
+            }
+        }
+
+
+        if (TownMetaData.hasPortmaster(e.getTown())) {
+            if (StewardLookup.get().getSteward(TownMetaData.getPortmaster(e.getTown())).getTownBlock().getWorldCoord().equals(e.getTownBlock().getWorldCoord())) {
+                e.setCancelMessage("There is a steward in this chunk. Move them to another chunk to unclaim this chunk.");
+                e.setCancelled(true);
+            }
+        }
+
+        if (TownMetaData.hasStablemaster(e.getTown())) {
+            if (StewardLookup.get().getSteward(TownMetaData.getStablemaster(e.getTown())).getTownBlock().getWorldCoord().equals(e.getTownBlock().getWorldCoord())) {
+                e.setCancelMessage("There is a steward in this chunk. Move them to another chunk to unclaim this chunk.");
+                e.setCancelled(true);
+            }
+        }
+
+
+        if (TownMetaData.hasTreasurer(e.getTown())) {
+            if (StewardLookup.get().getSteward(TownMetaData.getTreasurer(e.getTown())).getTownBlock().getWorldCoord().equals(e.getTownBlock().getWorldCoord())) {
+                e.setCancelMessage("There is a steward in this chunk. Move them to another chunk to unclaim this chunk.");
+                e.setCancelled(true);
             }
         }
     }
