@@ -7,6 +7,7 @@ import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Appearance;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -35,7 +36,7 @@ public class AppearanceGui {
 
         ItemStack exitItem = new ItemStack(Material.PAPER);
         ItemMeta exitMeta = exitItem.getItemMeta();
-        exitMeta.displayName(ColorParser.of("<red>Back").build());
+        exitMeta.displayName(ColorParser.of("<red>Back").build().decoration(TextDecoration.ITALIC, false));
         exitMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         exitItem.setItemMeta(exitMeta);
 
@@ -43,19 +44,19 @@ public class AppearanceGui {
 
         ItemStack nameItem = new ItemStack(Material.NAME_TAG);
         ItemMeta nameMeta = nameItem.getItemMeta();
-        nameMeta.displayName(ColorParser.of("<green>Re-roll name").build());
+        nameMeta.displayName(ColorParser.of("<green>Re-roll name").build().decoration(TextDecoration.ITALIC, false));
         nameMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         nameItem.setItemMeta(nameMeta);
 
         ItemStack skinItem = new ItemStack(Material.LEATHER_CHESTPLATE);
         ItemMeta skinMeta = skinItem.getItemMeta();
-        skinMeta.displayName(ColorParser.of("<green>Re-roll skin").build());
+        skinMeta.displayName(ColorParser.of("<green>Re-roll skin").build().decoration(TextDecoration.ITALIC, false));
         skinMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         skinItem.setItemMeta(skinMeta);
 
         ItemStack nameAndSkinItem = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta nameAndSkinMeta = nameAndSkinItem.getItemMeta();
-        nameAndSkinMeta.displayName(ColorParser.of("<green>Re-roll name and skin").build());
+        nameAndSkinMeta.displayName(ColorParser.of("<green>Re-roll name and skin").build().decoration(TextDecoration.ITALIC, false));
         nameAndSkinMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         nameAndSkinItem.setItemMeta(nameAndSkinMeta);
 

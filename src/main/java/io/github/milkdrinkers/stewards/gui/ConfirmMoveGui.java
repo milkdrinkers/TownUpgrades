@@ -8,6 +8,7 @@ import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -34,19 +35,19 @@ public class ConfirmMoveGui {
     private static void populateButtons(Gui gui, Steward steward, Player player) {
         ItemStack backItem = new ItemStack(Material.RED_BED);
         ItemMeta backMeta = backItem.getItemMeta();
-        backMeta.displayName(ColorParser.of("<green>Go back to previous location").build());
+        backMeta.displayName(ColorParser.of("<green>Go back to previous location").build().decoration(TextDecoration.ITALIC, false));
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         backItem.setItemMeta(backMeta);
 
         ItemStack stayItem = new ItemStack(Material.GRASS_BLOCK);
         ItemMeta stayMeta = stayItem.getItemMeta();
-        stayMeta.displayName(ColorParser.of("<green>Stay here").build());
+        stayMeta.displayName(ColorParser.of("<green>Stay here").build().decoration(TextDecoration.ITALIC, false));
         stayMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         stayItem.setItemMeta(stayMeta);
 
         ItemStack continueItem = new ItemStack(Material.LEAD);
         ItemMeta continueMeta = continueItem.getItemMeta();
-        continueMeta.displayName(ColorParser.of("<green>Keep following").build());
+        continueMeta.displayName(ColorParser.of("<green>Keep following").build().decoration(TextDecoration.ITALIC, false));
         continueMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         continueItem.setItemMeta(continueMeta);
 

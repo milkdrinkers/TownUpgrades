@@ -16,6 +16,7 @@ import io.github.milkdrinkers.stewards.trait.TreasurerTrait;
 import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -44,14 +45,14 @@ public class ConfirmStipendGui {
     private static void populateButtons(Gui gui, Steward steward, Player player, int cost) {
         ItemStack upgradeItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta upgradeMeta = upgradeItem.getItemMeta();
-        upgradeMeta.displayName(ColorParser.of("<green>Pay " + steward.getStewardType().getName()).build());
-        upgradeMeta.lore(List.of(ColorParser.of("<grey>Paying this steward costs " + cost + "⊚.").build()));
+        upgradeMeta.displayName(ColorParser.of("<green>Pay " + steward.getStewardType().getName()).build().decoration(TextDecoration.ITALIC, false));
+        upgradeMeta.lore(List.of(ColorParser.of("<grey>Paying this steward costs " + cost + "⊚.").build().decoration(TextDecoration.ITALIC, false)));
         upgradeMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         upgradeItem.setItemMeta(upgradeMeta);
 
         ItemStack backItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta backMeta = backItem.getItemMeta();
-        backMeta.displayName(ColorParser.of("<red>Back").build());
+        backMeta.displayName(ColorParser.of("<red>Back").build().decoration(TextDecoration.ITALIC, false));
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         backItem.setItemMeta(backMeta);
 

@@ -17,6 +17,7 @@ import io.github.milkdrinkers.stewards.trait.TreasurerTrait;
 import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -45,19 +46,19 @@ public class ConfirmFireGui {
     private static void populateButtons(Gui gui, Steward steward, Player player) {
         ItemStack fireItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta fireMeta = fireItem.getItemMeta();
-        fireMeta.displayName(ColorParser.of("<green>Hire " + steward.getStewardType().getName()).build());
-        fireMeta.lore(List.of(ColorParser.of("<grey>This action is permanent and cannot be undone.").build()));
+        fireMeta.displayName(ColorParser.of("<green>Hire " + steward.getStewardType().getName()).build().decoration(TextDecoration.ITALIC, false));
+        fireMeta.lore(List.of(ColorParser.of("<grey>This action is permanent and cannot be undone.").build().decoration(TextDecoration.ITALIC, false)));
         fireMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         fireItem.setItemMeta(fireMeta);
 
         ItemStack backItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta backMeta = backItem.getItemMeta();
-        backMeta.displayName(ColorParser.of("<red>Cancel").build());
+        backMeta.displayName(ColorParser.of("<red>Cancel").build().decoration(TextDecoration.ITALIC, false));
         backMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         backItem.setItemMeta(backMeta);
 
         gui.setItem(1, 2, ItemBuilder.from(fireItem).asGuiItem(e -> {
-            player.sendMessage(ColorParser.of("<green>You have fired the " + steward.getStewardType().getName() + ".").build());
+            player.sendMessage(ColorParser.of("<green>You have fired the " + steward.getStewardType().getName() + ".").build().decoration(TextDecoration.ITALIC, false));
 
             Town town = TownyAPI.getInstance().getTown(player);
             if (town == null) { // This should never happen, as player was allowed to interact with steward
