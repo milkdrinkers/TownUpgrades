@@ -15,6 +15,7 @@ import io.github.milkdrinkers.stewards.towny.TownMetaData;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
+import net.citizensnpcs.trait.HologramTrait;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -106,6 +107,10 @@ public class ConfirmUpgradeGui {
                 }
 
                 town.getAccount().withdraw(cost, "Stewards: Upgraded " + steward.getStewardType().getName());
+
+                HologramTrait hologramTrait = steward.getSettler().getNpc().getOrAddTrait(HologramTrait.class);
+                hologramTrait.clear();
+                hologramTrait.addLine("&7[&b" + steward.getStewardType().getName() + "&7]" + " &aLvl " + steward.getLevel());
 
             } else {
                 player.sendMessage(ColorParser.of("<red>Something went wrong, the steward couldn't be upgraded.").build());

@@ -519,7 +519,8 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
             steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownUUID(TownyAPI.getInstance().getTown(player).getUUID());
 
             HologramTrait hologramTrait = steward.getSettler().getNpc().getOrAddTrait(HologramTrait.class);
-            hologramTrait.addLine(steward.getStewardType().getName());
+            hologramTrait.clear();
+            hologramTrait.addLine("&7[&b" + steward.getStewardType().getName() + "&7]" + " &aLvl " + steward.getLevel());
 
             if (female) {
                 Appearance.applyFemaleStewardSkin(steward);
