@@ -18,24 +18,22 @@ import org.bukkit.entity.Player;
 /**
  * Class containing the code for the example command.
  */
-class ExampleCommand {
+class StewardsCommand {
     private static final String BASE_PERM = "example.command";
 
     /**
      * Instantiates and registers a new command.
      */
-    protected ExampleCommand() {
-        new CommandAPICommand("example")
-            .withFullDescription("Example command.")
-            .withShortDescription("Example command.")
+    protected StewardsCommand() {
+        new CommandAPICommand("stewards")
             .withSubcommands(
                 new TranslationCommand().command()
             )
-            .executes(this::executorExample)
+            .executes(this::executorSpawn)
             .register();
     }
 
-    private void executorExample(CommandSender sender, CommandArguments args) {
+    private void executorSpawn(CommandSender sender, CommandArguments args) {
         try {
             boolean female = Math.random() > 0.5; // TODO most up to date spawn logic.
             String name = Appearance.getMaleName();
@@ -64,7 +62,7 @@ class ExampleCommand {
             steward.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class);
 
             HologramTrait hologramTrait = steward.getSettler().getNpc().getOrAddTrait(HologramTrait.class);
-            hologramTrait.addLine(steward.getStewardType().getName());
+            hologramTrait.addLine("&7[&6" + steward.getStewardType().getName() + "&7]");
 
             if (female) {
                 Appearance.applyFemaleStewardSkin(steward);
