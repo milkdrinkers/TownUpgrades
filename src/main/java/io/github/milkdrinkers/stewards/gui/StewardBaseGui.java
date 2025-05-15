@@ -147,6 +147,29 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
                 gui.close(player);
             }
         }));
+
+        ItemStack infoItem = new ItemStack(Material.PLAYER_HEAD);
+        ItemMeta infoMeta = infoItem.getItemMeta();
+        infoMeta.displayName(ColorParser.of("<green>" + steward.getSettler().getNpc().getName()).build());
+        infoMeta.lore(List.of(
+            ColorParser.of("<grey>Type: " + steward.getStewardType().getSettlerPrefix()).build()
+        ));
+
+        if (!steward.getSettler().getNpc().hasTrait(ArchitectTrait.class)) {
+            infoMeta.lore().add(ColorParser.of("<grey>Level: " + steward.getLevel()).build());
+
+            if (!steward.getSettler().getNpc().hasTrait(BailiffTrait.class) && steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).isHired()) {
+                infoMeta.lore().add(ColorParser.of("<grey>Daily cost: " +
+                    Cfg.get().getInt(steward.getStewardType().getName().toLowerCase().replace(" ", "-")
+                        + ".daily-cost.level-" + steward.getLevel())).build());
+            }
+
+        }
+
+        infoMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        infoItem.setItemMeta(infoMeta);
+
+        gui.setItem(1, 5, ItemBuilder.from(infoItem).asGuiItem());
     }
 
     private static void populateUnHiredButtons(Gui gui, Steward steward, Player player) {
