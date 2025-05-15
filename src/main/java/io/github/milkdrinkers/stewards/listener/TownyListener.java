@@ -36,9 +36,7 @@ public class TownyListener implements Listener {
         Town town = e.getTown();
 
         if ((e.getTransaction().getReceivingAccount().getHoldingBalance() + e.getTransaction().getAmount()) > TownMetaData.getBankLimit(town)) {
-            e.getTransaction().getSendingPlayer().sendMessage(
-                ColorParser.of("<red>You can't transfer that much money into your town bank. Your town bank limit is: "
-                    + TownMetaData.getBankLimit(town)).build());
+            e.setCancelMessage("You can't transfer that much money into your town bank. Your town bank limit is: " + TownMetaData.getBankLimit(town));
             e.setCancelled(true);
         }
     }
