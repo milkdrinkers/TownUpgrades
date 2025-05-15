@@ -1,12 +1,18 @@
 package io.github.milkdrinkers.stewards.trait;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.milkdrinkers.colorparser.ColorParser;
+import io.github.milkdrinkers.stewards.Stewards;
 import io.github.milkdrinkers.stewards.gui.StewardBaseGui;
+import io.github.milkdrinkers.stewards.hook.Hook;
+import io.github.milkdrinkers.stewards.hook.HookManager;
 import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
+import io.github.milkdrinkers.stewards.utility.Logger;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -135,7 +141,7 @@ public class StewardTrait extends Trait {
         level = key.getInt("level");
 
         anchorLocation = (Location) key.getRaw("anchorlocation");
-        townUUID = (UUID) key.getRaw("townuuid"); // TODO don't respawn if this doesn't exist
+        townUUID = (UUID) key.getRaw("townuuid");
         townBlock = (TownBlock) key.getRaw("townblock");
     }
 
@@ -152,13 +158,29 @@ public class StewardTrait extends Trait {
     }
 
     @EventHandler
+    public void onSpawn(NPCSpawnEvent e) {
+        if (e.getNPC() != this.getNPC()) return;
+        this.anchorLocation = e.getNPC().getEntity().getLocation();
+    }
+
+    @EventHandler
     public void click(NPCRightClickEvent e) {
         if (e.getNPC() != this.getNPC()) return;
 
         if (e.getClicker().isSneaking()) return;
 
-        if (!TownyAPI.getInstance().getResident(e.getClicker()).isMayor() &&
-            (this.getNPC().hasTrait(PortmasterTrait.class) || this.getNPC().hasTrait(StablemasterTrait.class))) {
+        Resident resident = TownyAPI.getInstance().getResident(e.getClicker());
+
+        if (resident == null) { // This shouldn't be possible.
+            Logger.get().error("Resident was null when right clicking a steward.");
+            return;
+        }
+
+        boolean isPortSteward = this.getNPC().hasTrait(PortmasterTrait.class) || this.getNPC().hasTrait(StablemasterTrait.class);
+        boolean isMayor = resident.isMayor() || resident.getTownRanks().contains("co-mayor");
+        boolean isAdmin = Hook.getVaultHook().isHookLoaded() && e.getClicker().hasPermission("stewards.admin");
+
+        if (!isPortSteward && !isMayor && !isAdmin) {
             e.getClicker().sendMessage(ColorParser.of("<red>You must be mayor or co-mayor to interact with stewards.").build());
             return;
         }
