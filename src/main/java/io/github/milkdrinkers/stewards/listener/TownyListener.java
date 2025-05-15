@@ -24,6 +24,7 @@ import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class TownyListener implements Listener {
 
@@ -84,6 +85,16 @@ public class TownyListener implements Listener {
             steward.getSettler().getNpc().getOrAddTrait(StewardTrait.class).setTownBlock(town.getHomeBlock());
         } catch (TownyException ex) {
             Logger.get().error("Couldn't set steward townblock when creating town: " + ex);
+        }
+
+        if (TownyAPI.getInstance().getTown(steward.getSettler().getNpc().getEntity().getLocation()).getUUID() == null
+            && TownyAPI.getInstance().getTown(steward.getSettler().getNpc().getEntity().getLocation()).getUUID() != steward.getTownUUID()) {
+            try {
+                steward.getSettler().getNpc().teleport(town.getSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                steward.getSettler().getNpc().getTraitNullable(StewardTrait.class).setAnchorLocation(steward.getSettler().getNpc().getEntity().getLocation());
+            } catch (TownyException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         TownyDataUtil.removePlayerAndSteward(town.getMayor().getUUID());
