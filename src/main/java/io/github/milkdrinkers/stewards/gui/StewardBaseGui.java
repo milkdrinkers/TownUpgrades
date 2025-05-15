@@ -231,7 +231,12 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
 
             if (TownyAPI.getInstance().getResident(player).isMayor()) {
                 gui.setItem(3, 3, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
-                    ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
+                    if (steward.getLevel() < steward.getStewardType().getMaxLevel()) {
+                        ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
+                    } else {
+                        gui.close(player);
+                        player.sendMessage(ColorParser.of("<red>You've reached the maximum level for this steward.").build());
+                    }
                 }));
 
                 gui.setItem(3, 7, ItemBuilder.from(fireItem).asGuiItem(event -> {
@@ -250,8 +255,13 @@ public class StewardBaseGui { // TODO refactor this absolutely disgusting class
             }));
 
         } else {
-            gui.setItem(3, 4, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
-                ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
+            gui.setItem(3, 3, ItemBuilder.from(upgradeItem).asGuiItem(event -> {
+                if (steward.getLevel() < steward.getStewardType().getMaxLevel()) {
+                    ConfirmUpgradeGui.createGui(steward, player, cost).open(player);
+                } else {
+                    gui.close(player);
+                    player.sendMessage(ColorParser.of("<red>You've reached the maximum level for this steward.").build());
+                }
             }));
 
             gui.setItem(3, 6, ItemBuilder.from(fireItem).asGuiItem(event -> {
