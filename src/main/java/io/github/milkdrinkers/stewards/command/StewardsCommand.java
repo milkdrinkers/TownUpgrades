@@ -12,6 +12,7 @@ import io.github.milkdrinkers.stewards.trait.ArchitectTrait;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Appearance;
 import net.citizensnpcs.trait.HologramTrait;
+import net.citizensnpcs.trait.LookClose;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -63,6 +64,8 @@ class StewardsCommand {
 
             HologramTrait hologramTrait = steward.getSettler().getNpc().getOrAddTrait(HologramTrait.class);
             hologramTrait.addLine("&7[&6" + steward.getStewardType().getName() + "&7]");
+
+            steward.getSettler().getNpc().getOrAddTrait(LookClose.class);
 
             if (female) {
                 Appearance.applyFemaleStewardSkin(steward);
