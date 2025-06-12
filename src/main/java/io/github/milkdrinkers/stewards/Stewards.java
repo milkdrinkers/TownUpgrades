@@ -93,6 +93,7 @@ public class Stewards extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PortmasterTrait.class).withName("portmaster"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(StablemasterTrait.class).withName("stablemaster"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TreasurerTrait.class).withName("treasurer"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ArchitectSpawnerTrait.class).withName("architectspawner"));
     }
 
     @Override

@@ -19,6 +19,7 @@ import io.github.milkdrinkers.stewards.steward.Steward;
 import io.github.milkdrinkers.stewards.steward.StewardLookup;
 import io.github.milkdrinkers.stewards.towny.TownMetaData;
 import io.github.milkdrinkers.stewards.towny.TownyDataUtil;
+import io.github.milkdrinkers.stewards.trait.ArchitectTrait;
 import io.github.milkdrinkers.stewards.trait.StewardTrait;
 import io.github.milkdrinkers.stewards.utility.Cfg;
 import io.github.milkdrinkers.stewards.utility.Logger;
@@ -71,6 +72,8 @@ public class TownyListener implements Listener {
         if (!TownyDataUtil.isStewardCreatedTown(town.getMayor().getUUID())) return;
 
         Steward steward = StewardLookup.get().getSteward(TownyDataUtil.getStewardUUID(town.getMayor().getUUID()));
+
+        StewardLookup.get().clearHasArchitect(steward.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class).getSpawningPlayer());
 
         TownMetaData.setBankLimit(town, Cfg.get().getInt("treasurer.limit.level-0"));
 

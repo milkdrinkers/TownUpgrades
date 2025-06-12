@@ -157,8 +157,11 @@ public class StewardTrait extends Trait {
         key.setInt("level", level);
 
         key.setRaw("anchorlocation", anchorLocation);
-        key.setRaw("townuuid", townUUID);
-        key.setRaw("townblock", townBlock);
+
+        if (townUUID != null)
+            key.setRaw("townuuid", townUUID);
+        if (townBlock != null)
+            key.setRaw("townblock", townBlock);
     }
 
     @EventHandler
@@ -203,35 +206,6 @@ public class StewardTrait extends Trait {
 
         StewardBaseGui.createBaseGui(steward, e.getClicker()).open(e.getClicker());
     }
-
-//    @EventHandler
-//    public void onMove(NPCMoveEvent e) {
-//        if (e.getNPC() != this.getNPC()) return;
-//        if (e.getNPC().hasTrait(ArchitectTrait.class) && !hired) return;
-//
-//        if (TownyAPI.getInstance().getTown(e.getTo()) == null) {
-//            e.setCancelled(true);
-//
-//            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
-//            followingPlayer.sendMessage("<red>Stewards aren't allowed to move outside of their town.");
-//
-//            following = false;
-//            followingPlayer = null;
-//            npc.getNavigator().setTarget(anchorLocation);
-//            return;
-//        }
-//
-//        if (!TownyAPI.getInstance().getTown(e.getTo()).getUUID().equals(townUUID)) {
-//            e.setCancelled(true);
-//
-//            StewardLookup.get().removeStewardFollowingPlayer(followingPlayer);
-//            followingPlayer.sendMessage("<red>Stewards aren't allowed to move outside of their town.");
-//
-//            following = false;
-//            followingPlayer = null;
-//            npc.getNavigator().setTarget(anchorLocation);
-//        }
-//    }
 
     @Override
     public void run() {

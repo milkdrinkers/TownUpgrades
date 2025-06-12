@@ -10,5 +10,18 @@
       "help": "\n<white>Translations subcommands:\n  <dark_gray>• <white>reload: <gray><i>Reloads the translation files.\n  <dark_gray>• <white>test <node>: <gray><i>Test a translation.\n",
       "reloaded": "<green>Successfully reloaded translations!"
     }
+  },
+  "traits": {
+    "spawner": {
+      "has-architect": "Looks like you already have company. I can't spare another architect to go with you.",
+      "has-town": "Looks like you're already in a town. If you want to create your own town, you have to leave your current one first.",
+      "cannot-afford": "You don't have enough money to create a new town right now. Come back when you have <price>⊚.",
+      "spawn": "So you want to create a town? [Yes/No]",
+      "spawned": "This architect will go with you. Lead them to where you want your new town, and let them work their magic.",
+      "come-back": "Come back to me when you're ready to start your very own town."
+    }
+  },
+  "error": {
+    "resident-null": "<red>Something went wrong. Please contact staff if this issue persists."
   }
 }

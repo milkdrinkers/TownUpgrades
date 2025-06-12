@@ -13,6 +13,9 @@ import io.github.milkdrinkers.stewards.trait.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.time.Duration;
+import java.time.Instant;
+
 public class SettlersListener implements Listener {
 
     @EventHandler
@@ -27,93 +30,118 @@ public class SettlersListener implements Listener {
         // This theoretically shouldn't change anything, as the anchor location should always update as the NPC moves
         stewardTrait.setAnchorLocation(e.getLocation());
 
-        if (!stewardTrait.isHired()) e.getSettler().delete();
+
 
         // If the Steward doesn't have at least one of these traits, something is wrong.
         if (e.getSettler().getNpc().hasTrait(ArchitectTrait.class)) {
-            try {
-                Steward steward = Steward.builder()
-                    .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
-                        Stewards.getInstance().getStewardTypeHandler().ARCHITECT_ID))
-                    .setDailyUpkeepCost(0)
-                    .setIsEnabled(true)
-                    .setIsHidden(false)
-                    .setLevel(stewardTrait.getLevel())
-                    .setSettler(e.getSettler())
-                    .setTownBlock(stewardTrait.getTownBlock())
-                    .build();
 
-                StewardLookup.get().registerSteward(steward);
-            } catch (InvalidStewardException ex) {
-                throw new RuntimeException(ex);
+            // If the architect is not hired, i.e. town is not created, and more than 7 days have passed since the architect was first spawned, delete the architect
+            if (!stewardTrait.isHired() &&
+                Duration.between(e.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class).getCreateTime(), Instant.now())
+                    .compareTo(Duration.ofDays(7)) > 0) {
+                e.getSettler().delete();
+            } else {
+                try {
+                    Steward steward = Steward.builder()
+                        .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
+                            Stewards.getInstance().getStewardTypeHandler().ARCHITECT_ID))
+                        .setDailyUpkeepCost(0)
+                        .setIsEnabled(true)
+                        .setIsHidden(false)
+                        .setLevel(stewardTrait.getLevel())
+                        .setSettler(e.getSettler())
+                        .setTownBlock(stewardTrait.getTownBlock())
+                        .build();
+
+                    StewardLookup.get().registerSteward(steward);
+                    StewardLookup.get().setHasArchitect(e.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class).getSpawningPlayer());
+                } catch (InvalidStewardException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         } else if (e.getSettler().getNpc().hasTrait(BailiffTrait.class)) {
-            try {
-                Steward steward = Steward.builder()
-                    .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
-                        Stewards.getInstance().getStewardTypeHandler().BAILIFF_ID))
-                    .setDailyUpkeepCost(0)
-                    .setIsEnabled(true)
-                    .setIsHidden(false)
-                    .setLevel(stewardTrait.getLevel())
-                    .setSettler(e.getSettler())
-                    .setTownBlock(stewardTrait.getTownBlock())
-                    .build();
+            if (!stewardTrait.isHired()) {
+                e.getSettler().delete();
+            } else {
+                try {
+                    Steward steward = Steward.builder()
+                        .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
+                            Stewards.getInstance().getStewardTypeHandler().BAILIFF_ID))
+                        .setDailyUpkeepCost(0)
+                        .setIsEnabled(true)
+                        .setIsHidden(false)
+                        .setLevel(stewardTrait.getLevel())
+                        .setSettler(e.getSettler())
+                        .setTownBlock(stewardTrait.getTownBlock())
+                        .build();
 
-                StewardLookup.get().registerSteward(steward);
-            } catch (InvalidStewardException ex) {
-                throw new RuntimeException(ex);
+                    StewardLookup.get().registerSteward(steward);
+                } catch (InvalidStewardException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         } else if (e.getSettler().getNpc().hasTrait(PortmasterTrait.class)) {
-            try {
-                Steward steward = Steward.builder()
-                    .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
-                        Stewards.getInstance().getStewardTypeHandler().PORTMASTER_ID))
-                    .setDailyUpkeepCost(0)
-                    .setIsEnabled(true)
-                    .setIsHidden(false)
-                    .setLevel(stewardTrait.getLevel())
-                    .setSettler(e.getSettler())
-                    .setTownBlock(stewardTrait.getTownBlock())
-                    .build();
+            if (!stewardTrait.isHired()) {
+                e.getSettler().delete();
+            } else {
+                try {
+                    Steward steward = Steward.builder()
+                        .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
+                            Stewards.getInstance().getStewardTypeHandler().PORTMASTER_ID))
+                        .setDailyUpkeepCost(0)
+                        .setIsEnabled(true)
+                        .setIsHidden(false)
+                        .setLevel(stewardTrait.getLevel())
+                        .setSettler(e.getSettler())
+                        .setTownBlock(stewardTrait.getTownBlock())
+                        .build();
 
-                StewardLookup.get().registerSteward(steward);
-            } catch (InvalidStewardException ex) {
-                throw new RuntimeException(ex);
+                    StewardLookup.get().registerSteward(steward);
+                } catch (InvalidStewardException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         } else if (e.getSettler().getNpc().hasTrait(StablemasterTrait.class)) {
-            try {
-                Steward steward = Steward.builder()
-                    .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
-                        Stewards.getInstance().getStewardTypeHandler().STABLEMASTER_ID))
-                    .setDailyUpkeepCost(0)
-                    .setIsEnabled(true)
-                    .setIsHidden(false)
-                    .setLevel(stewardTrait.getLevel())
-                    .setSettler(e.getSettler())
-                    .setTownBlock(stewardTrait.getTownBlock())
-                    .build();
+            if (!stewardTrait.isHired()) {
+                e.getSettler().delete();
+            } else {
+                try {
+                    Steward steward = Steward.builder()
+                        .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
+                            Stewards.getInstance().getStewardTypeHandler().STABLEMASTER_ID))
+                        .setDailyUpkeepCost(0)
+                        .setIsEnabled(true)
+                        .setIsHidden(false)
+                        .setLevel(stewardTrait.getLevel())
+                        .setSettler(e.getSettler())
+                        .setTownBlock(stewardTrait.getTownBlock())
+                        .build();
 
-                StewardLookup.get().registerSteward(steward);
-            } catch (InvalidStewardException ex) {
-                throw new RuntimeException(ex);
+                    StewardLookup.get().registerSteward(steward);
+                } catch (InvalidStewardException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         } else if (e.getSettler().getNpc().hasTrait(TreasurerTrait.class)) {
-            try {
-                Steward steward = Steward.builder()
-                    .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
-                        Stewards.getInstance().getStewardTypeHandler().TREASURER_ID))
-                    .setDailyUpkeepCost(0)
-                    .setIsEnabled(true)
-                    .setIsHidden(false)
-                    .setLevel(stewardTrait.getLevel())
-                    .setSettler(e.getSettler())
-                    .setTownBlock(stewardTrait.getTownBlock())
-                    .build();
+            if (!stewardTrait.isHired()) {
+                e.getSettler().delete();
+            } else {
+                try {
+                    Steward steward = Steward.builder()
+                        .setStewardType(Stewards.getInstance().getStewardTypeHandler().getStewardTypeRegistry().getType(
+                            Stewards.getInstance().getStewardTypeHandler().TREASURER_ID))
+                        .setDailyUpkeepCost(0)
+                        .setIsEnabled(true)
+                        .setIsHidden(false)
+                        .setLevel(stewardTrait.getLevel())
+                        .setSettler(e.getSettler())
+                        .setTownBlock(stewardTrait.getTownBlock())
+                        .build();
 
-                StewardLookup.get().registerSteward(steward);
-            } catch (InvalidStewardException ex) {
-                throw new RuntimeException(ex);
+                    StewardLookup.get().registerSteward(steward);
+                } catch (InvalidStewardException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
 

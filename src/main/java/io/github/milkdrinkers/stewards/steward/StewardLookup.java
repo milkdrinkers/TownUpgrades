@@ -6,7 +6,9 @@ import io.github.milkdrinkers.stewards.Stewards;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class StewardLookup implements Reloadable {
@@ -14,6 +16,7 @@ public class StewardLookup implements Reloadable {
     private final Stewards plugin;
     private final HashMap<UUID, Steward> settlerStewardHashmap = new HashMap<>();
     private final HashMap<UUID, Steward> stewardFollowingPlayerHashmap = new HashMap<>();
+    private final List<UUID> hasArchitectList = new ArrayList<>();
 
     public static StewardLookup get() {
         return Stewards.getInstance().getStewardLookup();
@@ -85,6 +88,30 @@ public class StewardLookup implements Reloadable {
 
     public void unregisterSteward(Steward steward) {
         unregisterSteward(steward.getSettler());
+    }
+
+    public void setHasArchitect(UUID uuid) {
+        hasArchitectList.add(uuid);
+    }
+
+    public void setHasArchitect(Player player) {
+        setHasArchitect(player.getUniqueId());
+    }
+
+    public void clearHasArchitect(UUID uuid) {
+        hasArchitectList.remove(uuid);
+    }
+
+    public void clearHasArchitect(Player player) {
+        clearHasArchitect(player.getUniqueId());
+    }
+
+    public boolean hasArchitect(UUID uuid) {
+        return hasArchitectList.contains(uuid);
+    }
+
+    public boolean hasArchitect(Player player) {
+        return hasArchitect(player.getUniqueId());
     }
 
     @Override
