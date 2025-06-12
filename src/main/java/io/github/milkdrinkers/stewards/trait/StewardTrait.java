@@ -141,8 +141,12 @@ public class StewardTrait extends Trait {
         level = key.getInt("level");
 
         anchorLocation = (Location) key.getRaw("anchorlocation");
-        townUUID = (UUID) key.getRaw("townuuid");
-        townBlock = (TownBlock) key.getRaw("townblock");
+
+        if (key.getRaw("townuuid") != null)
+            townUUID = (UUID) key.getRaw("townuuid");
+
+        if (key.getRaw("townblock") != null)
+            townBlock = (TownBlock) key.getRaw("townblock");
     }
 
     public void save(DataKey key) {
