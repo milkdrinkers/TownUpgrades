@@ -77,7 +77,7 @@ dependencies {
         exclude("me.clip.placeholderapi.libs", "kyori")
     }
     compileOnly(libs.towny)
-    compileOnly(files("libs/AlathraPorts-1.0.1-SNAPSHOT-1746917838.jar"))
+    compileOnly(files("libs/AlathraPorts-1.0.1.jar"))
 
     // Testing - Core
     testImplementation(libs.annotations)
