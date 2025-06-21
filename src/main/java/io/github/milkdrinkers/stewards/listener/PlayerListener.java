@@ -67,7 +67,7 @@ public class PlayerListener implements Listener {
 
         if (e.getTo().getWorld() != world) return;
 
-        Steward steward = StewardLookup.get().getSteward(TownyAPI.getInstance().getTown(e.getPlayer()).getMayor().getUUID());
+        Steward steward = StewardLookup.get().getStewardFollowingPlayer(e.getPlayer());
         if (steward == null) return;
 
         // If steward is not an architect, don't continue
