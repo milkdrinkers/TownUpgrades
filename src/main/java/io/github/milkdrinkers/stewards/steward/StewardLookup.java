@@ -6,9 +6,7 @@ import io.github.milkdrinkers.stewards.Stewards;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class StewardLookup implements Reloadable {
@@ -16,7 +14,7 @@ public class StewardLookup implements Reloadable {
     private final Stewards plugin;
     private final HashMap<UUID, Steward> settlerStewardHashmap = new HashMap<>();
     private final HashMap<UUID, Steward> stewardFollowingPlayerHashmap = new HashMap<>();
-    private final List<UUID> hasArchitectList = new ArrayList<>();
+    private final HashMap<UUID, Steward> architectMap = new HashMap<>();
 
     public static StewardLookup get() {
         return Stewards.getInstance().getStewardLookup();
@@ -90,16 +88,16 @@ public class StewardLookup implements Reloadable {
         unregisterSteward(steward.getSettler());
     }
 
-    public void setHasArchitect(UUID uuid) {
-        hasArchitectList.add(uuid);
+    public void setArchitect(UUID uuid, Steward steward) {
+        architectMap.put(uuid, steward);
     }
 
-    public void setHasArchitect(Player player) {
-        setHasArchitect(player.getUniqueId());
+    public void setArchitect(Player player, Steward steward) {
+        setArchitect(player.getUniqueId(), steward);
     }
 
     public void clearHasArchitect(UUID uuid) {
-        hasArchitectList.remove(uuid);
+        architectMap.remove(uuid);
     }
 
     public void clearHasArchitect(Player player) {
@@ -107,11 +105,19 @@ public class StewardLookup implements Reloadable {
     }
 
     public boolean hasArchitect(UUID uuid) {
-        return hasArchitectList.contains(uuid);
+        return architectMap.containsKey(uuid);
     }
 
     public boolean hasArchitect(Player player) {
         return hasArchitect(player.getUniqueId());
+    }
+
+    public Steward getArchitect(UUID uuid) {
+        return architectMap.get(uuid);
+    }
+
+    public Steward getArchitect(Player player) {
+        return getArchitect(player.getUniqueId());
     }
 
     @Override

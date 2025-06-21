@@ -59,6 +59,9 @@ public class PlayerListener implements Listener {
         // Return if player is followed, handled above.
         if (StewardLookup.get().isPlayerFollowed(e.getPlayer())) return;
 
+        // If player doesn't have an architect, return.
+        if (!StewardLookup.get().hasArchitect(e.getPlayer())) return;
+
         if (!Cfg.get().getBoolean("architect.teleport.enabled")) return;
 
         // Get the configured world and null check
@@ -67,7 +70,7 @@ public class PlayerListener implements Listener {
 
         if (e.getTo().getWorld() != world) return;
 
-        Steward steward = StewardLookup.get().getStewardFollowingPlayer(e.getPlayer());
+        Steward steward = StewardLookup.get().getArchitect(e.getPlayer());
         if (steward == null) return;
 
         // If steward is not an architect, don't continue

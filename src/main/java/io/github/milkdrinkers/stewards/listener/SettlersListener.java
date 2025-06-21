@@ -54,7 +54,7 @@ public class SettlersListener implements Listener {
                         .build();
 
                     StewardLookup.get().registerSteward(steward);
-                    StewardLookup.get().setHasArchitect(e.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class).getSpawningPlayer());
+                    StewardLookup.get().setArchitect(e.getSettler().getNpc().getOrAddTrait(ArchitectTrait.class).getSpawningPlayer(), steward);
                 } catch (InvalidStewardException ex) {
                     throw new RuntimeException(ex);
                 }
