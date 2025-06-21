@@ -10,7 +10,6 @@ import io.github.milkdrinkers.stewards.Stewards;
 public class ConfigHandler implements Reloadable {
     private final Stewards plugin;
     private Config cfg;
-    private Config databaseCfg;
     private Config nameCfg;
     private Config skinsCfg;
 
@@ -26,7 +25,6 @@ public class ConfigHandler implements Reloadable {
     @Override
     public void onLoad(Stewards plugin) {
         cfg = new Config("config", plugin.getDataFolder().getPath(), plugin.getResource("config.yml")); // Create a config file from the template in our resources folder
-        databaseCfg = new Config("database", plugin.getDataFolder().getPath(), plugin.getResource("database.yml"));
         nameCfg = new Config("names", plugin.getDataFolder().getPath(), plugin.getResource("names.yml"));
         skinsCfg = new Config("skins", plugin.getDataFolder().getPath(), plugin.getResource("skins.yml"));
     }
@@ -46,15 +44,6 @@ public class ConfigHandler implements Reloadable {
      */
     public Config getConfig() {
         return cfg;
-    }
-
-    /**
-     * Gets database config object.
-     *
-     * @return the config object
-     */
-    public Config getDatabaseConfig() {
-        return databaseCfg;
     }
 
     /**
