@@ -49,7 +49,7 @@ public class StewardTypeHandler implements Reloadable {
 
             StewardType treasurer = StewardType.builder()
                 .setId(TREASURER_ID)
-                .setMaxLevel(6)
+                .setMaxLevel(4)
                 .setMinLevel(1)
                 .setName("Treasurer")
                 .setStartingLevel(1)
